@@ -52,17 +52,7 @@ wr
 
 - Создание пользователей admin для ssh.
 
-### HQ-RTR
-
-```tcl
-username net_admin
-password P@ssw0rd
-role admin
-end
-wr
-```
-
-### BR-RTR
+### HQ-RTR | BR-RTR
 
 ```tcl
 username net_admin
