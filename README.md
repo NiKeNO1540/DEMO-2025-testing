@@ -105,7 +105,7 @@ systemctl restart network
 
 ```bash
 visudo
-# Пишите 123, потом Shift+G > Стрелка вправо > Нажать "D" затем стрелка влево \ > :wq
+# Пишите 123, потом Shift+G > Стрелка вправо > Нажать "D" затем стрелка влево > :wq
 gpasswd -a "user" wheel
 ```
 
