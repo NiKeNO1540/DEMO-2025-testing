@@ -24,6 +24,7 @@ interface int0
 connect port te0 service-instance te0/int0
 exit
 ip route 0.0.0.0 0.0.0.0 172.16.4.1
+no security default
 exit
 wr
 ```
@@ -46,6 +47,7 @@ interface int0
 connect port te0 service-instance te0/int0
 exit
 ip route 0.0.0.0 0.0.0.0 172.16.5.1
+no security default
 exit
 wr
 ```
