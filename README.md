@@ -4,9 +4,13 @@
 
 - Базовая коммутация до ISP-a.
 
+-# Название пользователя: admin, пароль: admin
+
 ### HQ-RTR
 
 ```tcl
+en
+conf t
 interface int0
 description "to isp"
 ip address 172.16.4.4/28
@@ -27,6 +31,8 @@ wr
 ### BR-RTR
 
 ```tcl
+en
+conf t
 interface int0
 description "to isp"
 ip address 172.16.5.5/28
@@ -47,6 +53,7 @@ wr
 - Создание пользователей admin для ssh.
 
 ### HQ-RTR
+
 ```tcl
 username net_admin
 password P@ssw0rd
@@ -68,6 +75,8 @@ wr
 ## HQ-SRV | HQ-CLI | BR-SRV
 
 - Базовая коммутация до роутеров.
+
+-# Название пользователя: root|user, Пароль: toor|resu (На HQ-SRV|BR-SRV root, на HQ-CLI user)
 
 ### HQ-SRV
 
@@ -112,6 +121,7 @@ gpasswd -a "user" wheel
 ### HQ-CLI
 
 ```bash
+# После авторизации ПКМ > Терминал > su- > toor(пароль)
 visudo
 # Пишите 97, потом Shift+G > Стрелка вправо > Нажать "D" затем стрелка влево > :wq
 gpasswd -a "user" wheel
