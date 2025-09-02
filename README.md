@@ -4,7 +4,7 @@
 
 - Базовая коммутация до ISP-a.
 
--# Название пользователя: admin, пароль: admin
+<span style="color:white">Название пользователя: admin, пароль: admin</span>
 
 ### HQ-RTR
 
