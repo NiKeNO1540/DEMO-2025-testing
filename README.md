@@ -116,3 +116,22 @@ visudo
 # Пишите 97, потом Shift+G > Стрелка вправо > Нажать "D" затем стрелка влево > :wq
 gpasswd -a "user" wheel
 ```
+
+## ISP
+
+- Настройка DHCP интерфейса
+
+```bash
+mkdir -p /etc/net/ifaces/ens20
+echo -e "DISABLED=no\nTYPE=eth\nBOOTPROTO=dhcp\nCONFIG_IPv4=yes" > /etc/net/ifaces/ens20/options
+echo "net.ipv4.ip_forward = 1" >> /etc/net/sysctl.conf
+systemctl restart network
+```
+
+# Инструкция для активации ISP-a
+
+Placeholder.
+
+```bash
+apt-get update && apt-get install git -y && git clone https://github.com/NiKeNO1540/DEMO-2025-TESTING
+```
