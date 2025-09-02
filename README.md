@@ -4,7 +4,7 @@
 
 - Базовая коммутация до ISP-a.
 
-<span style="color:white">Название пользователя: admin, пароль: admin</span>
+> Название пользователя: admin, пароль: admin
 
 ### HQ-RTR
 
@@ -76,7 +76,7 @@ wr
 
 - Базовая коммутация до роутеров.
 
--# Название пользователя: root|user, Пароль: toor|resu (На HQ-SRV|BR-SRV root, на HQ-CLI user)
+> Название пользователя: root|user, Пароль: toor|resu (На HQ-SRV|BR-SRV root, на HQ-CLI user)
 
 ### HQ-SRV
 
