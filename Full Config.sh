@@ -9,11 +9,12 @@ echo -e "BOOTPROTO=static\nTYPE=eth\nDISABLED=no\nCONFIG_IPV4=yes" > /etc/net/if
 sed -i "s/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/" /etc/net/sysctl.conf
 systemctl restart network
 
-# Настройка HQ-RTR-Коммутация(Это очень мощный костыль, но рабочий, базируется на expect.)
+# Настройка HQ-RTR-BR-RTR-Коммутация(Это очень мощный костыль, но рабочий, базируется на expect.)
 
+cd DEMO-2025-TESTING
 apt-get update
 apt-get install expect -y
 apt-get install sshpass -y
 systemctl enable --now sshd
 expect hq-rtr.exp
-
+expect br-rtr.exp
