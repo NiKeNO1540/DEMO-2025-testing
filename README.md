@@ -52,18 +52,6 @@ exit
 wr
 ```
 
-- Создание пользователей admin для ssh.
-
-### HQ-RTR | BR-RTR
-
-```tcl
-username net_admin
-password P@ssw0rd
-role admin
-end
-wr
-```
-
 ## HQ-SRV | HQ-CLI | BR-SRV
 
 - Базовая коммутация до роутеров.
