@@ -100,24 +100,15 @@ echo "default via 192.168.3.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 ```
 
-- Добавление пользователя user в группу wheel и уравнение прав на уровне root-a
+- Разрешение на логирование через root(делайте только в случае автоматизации, в реальной жизни никто так делать конечно же не будет, всё сделано в целях автоматизации)
 
-### BR-SRV | HQ-SRV
-
-```bash
-visudo
-# Пишите 123, потом Shift+G > Стрелка вправо > Нажать "D" затем стрелка влево > :wq
-gpasswd -a "user" wheel
-```
-
-### HQ-CLI
+### BR-SRV | HQ-SRV | HQ-CLI
 
 ```bash
-# После авторизации ПКМ > Терминал > su- > toor(пароль)
-visudo
-# Пишите 97, потом Shift+G > Стрелка вправо > Нажать "D" затем стрелка влево > :wq
-gpasswd -a "user" wheel
+echo "PermitRootLogin yes" >> /etc/openssh/sshd_config
+systemctl restart sshd
 ```
+
 
 ## ISP
 
