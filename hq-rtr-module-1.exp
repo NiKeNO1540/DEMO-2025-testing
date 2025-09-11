@@ -43,7 +43,7 @@ if {$force_conservative} {
 
 
 set timeout -1
-spawn sshpass -p admin ssh admin@172.16.4.4
+spawn sshpass -p admin ssh admin@172.16.1.4
 match_max 100000
 expect -exact "7\[r\[999;999H\[6n"
 send -- "\[24;86R"
