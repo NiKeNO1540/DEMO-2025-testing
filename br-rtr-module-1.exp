@@ -43,7 +43,7 @@ if {$force_conservative} {
 
 
 set timeout -1
-spawn sshpass -p admin ssh admin@172.16.2.5
+spawn sshpass -p admin ssh admin@172.16.5.5
 match_max 100000
 expect -exact "7\[r\[999;999H\[6n"
 send -- "\[24;86R"
@@ -53,5 +53,5 @@ User Access Verification\r
 \r\r
 EcoRouterOS version Camellia 14/05/2024 16:45:56\r
 ecorouter>"
-send -- "en\rconf t\rhostname br-rtr\rip domain-name au-team.irpo\r\rusername net_admin\rpassword P@ssw0rd\rrole admin\rexit\r\rntp timezone utc+5\r\rinterface int0\r	description \"to isp\"\r	ip address 172.16.5.5/28\r	exit\rport te0\r	service-instance te0/int0\r		encapsulation untagged\r		exit\r	exit\rinterface int0\r	connect port te0 service-instance te0/int0\r	exit\rinterface int1\r	description \"to isp\"\r	ip address 192.168.3.1/27\r	exit\rport te1\r	service-instance te1/int1\r		encapsulation untagged\r		exit\r	exit\rinterface int1\r	connect port te1 service-instance te1/int1\r	exit\rip route 0.0.0.0 0.0.0.0 172.16.5.1\r\rint tunnel.0\rip add 172.16.0.2/30\rip mtu 1400\rip tunnel 172.16.5.5 172.16.4.4 mode gre\rip ospf authentication-key ecorouter\rexit\r\rrouter ospf 1\rnetwork 172.16.0.0/30 area 0\rnetwork 192.168.3.0/27 area 0\rpassive-interface default\rno passive-interface tunnel.0\rarea 0 authentication\rexit\r\r\rint int1\r	ip nat inside\r	exit\rint int0\r	ip nat outside\r	exit\rip nat pool NAT_POOL 192.168.3.1-192.168.3.254\rip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0\rexit\r\rwr\rexit\r "
+send -- "en\rconf t\rhostname br-rtr\rip domain-name au-team.irpo\r\rusername net_admin\rpassword P@ssw0rd\rrole admin\rexit\r\rntp timezone utc+5\r\rinterface int0\r	description \"to isp\"\r	ip address 172.16.5.5/28\r	exit\rport te0\r	service-instance te0/int0\r		encapsulation untagged\r		exit\r	exit\rinterface int0\r	connect port te0 service-instance te0/int0\r	exit\rinterface int1\r	description \"to isp\"\r	ip address 192.168.3.1/27\r	exit\rport te1\r	service-instance te1/int1\r		encapsulation untagged\r		exit\r	exit\rinterface int1\r	connect port te1 service-instance te1/int1\r	exit\rip route 0.0.0.0 0.0.0.0 172.16.5.1\r\rint tunnel.0\rip add 172.16.0.2/30\rip mtu 1400\rip tunnel 172.16.5.5 172.16.4.4 mode gre\rip ospf authentication-key ecorouter\rexit\r\rrouter ospf 1\rnetwork 172.16.0.0/30 area 0\rnetwork 192.168.3.0/27 area 0\rpassive-interface default\rno passive-interface tunnel.0\rarea 0 authentication\rexit\r\r\rint int1\r	ip nat inside\r	exit\rint int0\r	ip nat outside\r	exit\rip nat pool NAT_POOL 192.168.3.1-192.168.3.254\rip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0\rip nat source static tcp 192.168.3.10 8080 172.16.2.5 8080\rip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026\rexit\r\rwr\rexit\r "
 expect eof
