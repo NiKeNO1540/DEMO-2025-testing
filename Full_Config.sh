@@ -27,7 +27,7 @@ sshpass -p 'admin' ssh-copy-id admin@172.16.4.4
 ssh-keyscan -H 172.16.5.5 >> ~/.ssh/known_hosts
 sshpass -p 'admin' ssh-copy-id admin@172.16.5.5
 
-# Настройка HQ-RTR-BR-RTR-Коммутация(Это очень мощный костыль, но рабочий, базируется на expect.)
+# Настройка HQ-RTR|BR-RTR-Коммутация(Если по простому, базируется на expect, очень зависимый на переменных)
 
 cd DEMO-2025-testing
 apt-get update
