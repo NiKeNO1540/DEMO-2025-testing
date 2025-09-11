@@ -13,7 +13,7 @@ en
 conf t
 interface int0
 description "to isp"
-ip address 172.16.4.4/28
+ip address 172.16.1.4/28
 exit
 port te0
 service-instance te0/int0
@@ -23,7 +23,7 @@ exit
 interface int0
 connect port te0 service-instance te0/int0
 exit
-ip route 0.0.0.0 0.0.0.0 172.16.4.1
+ip route 0.0.0.0 0.0.0.0 172.16.1.1
 no security default
 exit
 wr
@@ -36,7 +36,7 @@ en
 conf t
 interface int0
 description "to isp"
-ip address 172.16.5.5/28
+ip address 172.16.2.5/28
 exit
 port te0
 service-instance te0/int0
@@ -46,7 +46,7 @@ exit
 interface int0
 connect port te0 service-instance te0/int0
 exit
-ip route 0.0.0.0 0.0.0.0 172.16.5.1
+ip route 0.0.0.0 0.0.0.0 172.16.2.1
 no security default
 exit
 wr
