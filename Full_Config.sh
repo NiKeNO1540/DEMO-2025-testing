@@ -45,6 +45,12 @@ sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.2.5
 sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.1.4
 sshpass -p 'toor' ssh-copy-id -p 2222 root@172.16.1.4
 
+echo "Смена название машины"
+
+echo "hostnamectl set-hostname hq-srv.au-team.irpo; exec bash" | ssh -p 2026 root@172.16.1.4
+echo "hostnamectl set-hostname hq-cli.au-team.irpo; exec bash" | ssh -p 2222 root@172.16.1.4
+echo "hostnamectl set-hostname br-srv.au-team.irpo; exec bash" | ssh -p 2026 root@172.16.2.5
+
 echo "Настройка DNS"
 
 ssh -p 2026 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
@@ -92,3 +98,6 @@ sshpass -p 'toor' ssh-copy-id -p 2222 hquser1@172.16.1.4
 cat << EOF | ssh -p 2222 hquser1@172.16.1.4
 sudo cat /etc/passwd | sudo grep root && sudo id root
 EOF
+
+
+hostnamectl set-hostname ISP; exec bash
