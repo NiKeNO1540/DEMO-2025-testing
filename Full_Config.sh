@@ -65,33 +65,6 @@ echo "reboot" | ssh -p 2222 root@172.16.1.4
 
 ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-2.sh
 
-sleep 13
-
-cat << EOF | ssh -p 2222 root@172.16.1.4
-apt-get install sudo libsss_sudo -y
-control sudo public
-
-sed -i '19 a\
-sudo_provider = ad' /etc/sssd/sssd.conf
-sed -i 's/services = nss, pam,/services = nss, pam, sudo' /etc/sssd/sssd.conf
-sed -i '28 a\
-sudoers: files sss' /etc/nsswitch.conf
-
-EOF
-echo "reboot" | ssh -p 2222 root@172.16.1.4
-
-sleep 15
-
-cat << EOF | ssh -p 2222 root@172.16.1.4
-rm -rf /var/lib/sss/db/*
-sss_cache -E
-systemctl restart sssd
-
-sudo -l -U hquser1
-EOF
-
-echo "reboot" | ssh -p 2222 root@172.16.1.4
-
 sleep 15
 
 sshpass -p 'toor' ssh-copy-id -p 2222 hquser1@172.16.1.4
