@@ -26,11 +26,6 @@ apt-get install sshpass -y
 sshpass -p 'admin' ssh-copy-id admin@172.16.1.4
 ssh-keyscan -H 172.16.2.5 >> ~/.ssh/known_hosts
 sshpass -p 'admin' ssh-copy-id admin@172.16.2.5
-ssh-keyscan -p 2026 172.16.1.4 >> ~/.ssh/known_hosts
-ssh-keyscan -p 2026 172.16.2.5 >> ~/.ssh/known_hosts
-sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.2.5
-sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.1.4
-sshpass -p 'toor' ssh-copy-id -p 2222 root@172.16.1.4
 
 # Настройка HQ-RTR|BR-RTR-Коммутация(Если по простому, базируется на инструментарии expect, очень зависимый на переменных)
 
@@ -40,6 +35,12 @@ apt-get install expect -y
 systemctl enable --now sshd
 expect hq-rtr-module-1.exp
 expect br-rtr-module-1.exp
+
+ssh-keyscan -p 2026 172.16.1.4 >> ~/.ssh/known_hosts
+ssh-keyscan -p 2026 172.16.2.5 >> ~/.ssh/known_hosts
+sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.2.5
+sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.1.4
+sshpass -p 'toor' ssh-copy-id -p 2222 root@172.16.1.4
 
 ssh -p 2026 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
 
