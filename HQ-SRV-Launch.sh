@@ -17,6 +17,7 @@ domain=au-team.irpo
 server=8.8.8.8
 interface=*
 address=/hq-rtr.au-team.irpo/192.168.1.1
+server=/au-team.irpo/192.168.3.10
 ptr-record=1.1.168.192.in-addr.arpa,hq-rtr.au-team.irpo
 address=/web.au-team.irpo/172.16.1.1
 address=/docker.au-team.irpo/172.16.2.1
