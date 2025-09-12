@@ -26,6 +26,10 @@ apt-get install sshpass -y
 sshpass -p 'admin' ssh-copy-id admin@172.16.1.4
 ssh-keyscan -H 172.16.2.5 >> ~/.ssh/known_hosts
 sshpass -p 'admin' ssh-copy-id admin@172.16.2.5
+ssh-keyscan 172.16.1.4 -p 2026 >> ~/.ssh/known_hosts
+ssh-keyscan 172.16.2.5 -p 2026 >> ~/.ssh/known_hosts
+sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.2.5
+sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.1.4
 
 # Настройка HQ-RTR|BR-RTR-Коммутация(Если по простому, базируется на инструментарии expect, очень зависимый на переменных)
 
