@@ -4,7 +4,7 @@
 echo nameserver 8.8.8.8 >> /etc/resolv.conf && apt-get update && apt-get install wget dos2unix task-samba-dc -y
 
 # Установка samba
-echo 192.168.1.10 >> /etc/resolv.conf
+echo nameserver 192.168.1.10 >> /etc/resolv.conf
 echo 192.168.3.10 br-srv.au-team.irpo >> /etc/hosts
 # Для HQ-SRV: echo server=/au-team.irpo/192.168.3.10 >> /etc/dnsmasq.conf
 rm -rf /etc/samba/smb.conf
