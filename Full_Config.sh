@@ -40,4 +40,4 @@ systemctl enable --now sshd
 expect hq-rtr-module-1.exp
 expect br-rtr-module-1.exp
 
-
+ssh -p 2026 root@172.1.4 "bash -s" < HQ-SRV-Launch.sh
