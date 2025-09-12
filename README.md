@@ -1,5 +1,21 @@
 # Преднастройка
 
+## ALTPve
+
+Для начала нужно вмонтировать образ.
+
+- Зайти по айпи адресу, выдаваемый машиной, затем зайти в его хранилище > ISO Образы
+
+<img width="1920" height="748" alt="image" src="https://github.com/user-attachments/assets/a4083415-18cf-4e71-a51f-33dbeaa14109" />
+
+- Затем нужно загрузить образ, который требуется (В данном случае Additional.iso)
+
+<img width="413" height="295" alt="image" src="https://github.com/user-attachments/assets/cf1eceba-1da3-482c-908e-2d96df4433c7" />
+
+- Затем нужно вмонтировать этот образ в HQ-SRV и BR-SRV: Нужно нажать по конкретной машине -> Hardware, Add > CD|DVD drive -> Дальше всё как на скрине и нажать "ОК"
+
+<img width="408" height="273" alt="image" src="https://github.com/user-attachments/assets/51cdb935-2c1a-4e8d-b71c-160bef934173" />
+
 ## HQ-RTR | BR-RTR (Ecorouter)
 
 - Базовая коммутация до ISP-a.
@@ -111,8 +127,6 @@ systemctl restart network
 
 # Инструкция для активации ISP-a
 
-Placeholder.
-
 ```bash
-apt-get update && apt-get install git -y && git clone https://github.com/NiKeNO1540/DEMO-2025-TESTING
+apt-get update && apt-get install git -y && git clone https://github.com/NiKeNO1540/DEMO-2025-testing && chmod +x DEMO-2025-testing/Full_Config.sh && ./DEMO-2025-testing/Full_Config.sh
 ```
