@@ -109,7 +109,8 @@ systemctl restart network
 ### BR-SRV | HQ-SRV | HQ-CLI
 
 ```bash
-echo "PermitRootLogin yes" >> /etc/openssh/sshd_config
+echo -e "PermitRootLogin yes\nPort 2026" >> /etc/openssh/sshd_config
+systemctl enable --now sshd
 systemctl restart sshd
 ```
 
