@@ -49,10 +49,12 @@ ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-1.sh
 cat << EOF | ssh -p 2222 root@172.16.1.4
 echo nameserver 8.8.8.8 >> /etc/resolv.conf && apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
-reboot
 EOF
+echo "reboot" | ssh -p 2222 root@172.16.1.4
 
 ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-2.sh
+
+sleep 13
 
 cat << EOF | ssh -p 2222 root@172.16.1.4
 apt-get install sudo libsss_sudo -y
@@ -64,8 +66,8 @@ sed -i 's/services = nss, pam,/services = nss, pam, sudo' /etc/sssd/sssd.conf
 sed -i '28 a\
 sudoers: files sss' /etc/nsswitch.conf
 
-reboot
 EOF
+echo "reboot" | ssh -p 2222 root@172.16.1.4
 
 sleep 15
 
@@ -75,8 +77,9 @@ sss_cache -E
 systemctl restart sssd
 
 sudo -l -U hquser1
-reboot
 EOF
+
+echo "reboot" | ssh -p 2222 root@172.16.1.4
 
 sleep 15
 
