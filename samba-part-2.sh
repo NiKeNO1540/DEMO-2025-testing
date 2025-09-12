@@ -16,7 +16,7 @@ echo "adding sudoers.."
 samba-tool ou add 'ou=sudoers'
 echo "implementing rule and adding it"
 cat << EOF > sudoRole-object.ldif
-dn: CN=prava_hq,OU=sudoers,DC=test,DC=alt
+dn: CN=prava_hq,OU=sudoers,DC=au-team,DC=irpo
 changetype: add
 objectClass: top
 objectClass: sudoRole
