@@ -1,14 +1,20 @@
 #! /bin/bash
 
+echo "Getting schema..."
 wget https://raw.githubusercontent.com/sudo-project/sudo/main/docs/schema.ActiveDirectory
+echo "unixing schema..."
 dos2unix schema.ActiveDirectory
+echo "adding dc..."
 sed -i 's/DC=X/DC=au-team,DC=irpo/g' schema.ActiveDirectory
+echo "separating schema..."
 head -$(grep -B1 -n '^dn:$' schema.ActiveDirectory | head -1 | grep -oP '\d+') schema.ActiveDirectory > first.ldif
 tail +$(grep -B1 -n '^dn:$' schema.ActiveDirectory | head -1 | grep -oP '\d+') schema.ActiveDirectory | sed '/^-/d' > second.ldif
+echo "adding schema..."
 ldbadd -H /var/lib/samba/private/sam.ldb first.ldif --option="dsdb:schema update allowed"=true
 ldbmodify -v -H /var/lib/samba/private/sam.ldb second.ldif --option="dsdb:schema update allowed"=true
+echo "adding sudoers.."
 samba-tool ou add 'ou=sudoers'
-
+echo "implementing rule and adding it"
 cat << EOF > sudoRole-object.ldif
 dn: CN=prava_hq,OU=sudoers,DC=test,DC=alt
 changetype: add
