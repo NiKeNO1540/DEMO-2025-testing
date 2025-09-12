@@ -3,7 +3,7 @@
 #! /bin/bash
 
 # Установка утилит
-apt-get install wget dos2unix task-samba-dc -y
+echo nameserver 8.8.8.8 >> /etc/resolv.conf && apt-get update && apt-get install wget dos2unix task-samba-dc -y
 
 # Установка samba
 echo 192.168.1.10 >> /etc/resolv.conf
