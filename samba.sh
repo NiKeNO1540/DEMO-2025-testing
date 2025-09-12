@@ -8,7 +8,7 @@ echo 192.168.1.10 >> /etc/resolv.conf
 echo 192.168.3.10 br-srv.au-team.irpo >> /etc/hosts
 # Для HQ-SRV: echo server=/au-team.irpo/192.168.3.10 >> /etc/dnsmasq.conf
 rm -rf /etc/samba/smb.conf
-samba-tool domain provision --realm=AU-TEAM.IRPO --domain=AU-TEAM --adminpass=P@ssw0rd --dns-backend=SAMBA_INTERNAL --server-role=dc --option='dns forwarder=8.8.8.8'
+samba-tool domain provision --realm=AU-TEAM.IRPO --domain=AU-TEAM --adminpass=P@ssw0rd --dns-backend=SAMBA_INTERNAL --server-role=dc --option='dns forwarder=192.168.1.10'
 mv -f /var/lib/samba/private/krb5.conf /etc/krb5.conf
 systemctl enable --now samba.service
 samba-tool user add hquser1 P@ssw0rd
