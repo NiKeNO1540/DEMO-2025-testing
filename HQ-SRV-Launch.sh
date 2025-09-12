@@ -3,7 +3,7 @@
 useradd sshuser -u 1010
 echo -e "P@ssw0rd\nP@ssw0rd" | passwd sshuser
 
-echo 8.8.8.8 >> /etc/resolv.conf
+echo nameserver 8.8.8.8 >> /etc/resolv.conf
 
 # Обновление, установка утилиты dnsmasq
 
