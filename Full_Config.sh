@@ -40,6 +40,7 @@ echo "Окончательная раздача ключей"
 
 ssh-keyscan -p 2026 172.16.1.4 >> ~/.ssh/known_hosts
 ssh-keyscan -p 2026 172.16.2.5 >> ~/.ssh/known_hosts
+ssh-keyscan -p 2222 172.16.1.4 >> ~/.ssh/known_hosts
 sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.2.5
 sshpass -p 'toor' ssh-copy-id -p 2026 root@172.16.1.4
 sshpass -p 'toor' ssh-copy-id -p 2222 root@172.16.1.4
