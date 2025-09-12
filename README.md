@@ -113,7 +113,7 @@ systemctl restart network
 
 - Разрешение на логирование через root(делайте только в случае автоматизации, в реальной жизни никто так делать конечно же не будет, всё сделано в целях автоматизации)
 
-### BR-SRV | HQ-SRV | HQ-CLI
+### BR-SRV | HQ-SRV 
 
 ```bash
 echo -e "PermitRootLogin yes\nPort 2026" >> /etc/openssh/sshd_config
@@ -121,6 +121,12 @@ systemctl enable --now sshd
 systemctl restart sshd
 ```
 
+### HQ-CLI
+```bash
+echo -e "PermitRootLogin yes\nPort 2222" >> /etc/openssh/sshd_config
+systemctl enable --now sshd
+systemctl restart sshd
+```
 
 ## ISP
 
