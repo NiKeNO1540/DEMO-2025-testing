@@ -2,7 +2,7 @@
 
 ## ALTPve
 
-Для начала нужно вмонтировать образ.
+### Монтирование образа.
 
 - Зайти по айпи адресу, выдаваемый машиной, затем зайти в его хранилище > ISO Образы
 
@@ -15,6 +15,13 @@
 - Затем нужно вмонтировать этот образ в HQ-SRV и BR-SRV: Нужно нажать по конкретной машине -> Hardware, Add > CD|DVD drive -> Дальше всё как на скрине и нажать "ОК"
 
 <img width="408" height="273" alt="image" src="https://github.com/user-attachments/assets/51cdb935-2c1a-4e8d-b71c-160bef934173" />
+
+### Добавление дисков для raid
+
+- PVE > HQ-SRV в Hardware > Add > Hard Disk > В пункте Storage выставляем local, размер диска 1 Gb > Добавляем всего 2 диска.
+
+<img width="605" height="279" alt="image" src="https://github.com/user-attachments/assets/7e654fa2-ff0b-4521-9697-baffeab4a304" />
+
 
 ## HQ-RTR | BR-RTR (Ecorouter)
 
