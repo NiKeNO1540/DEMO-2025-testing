@@ -1,7 +1,5 @@
 #! /bin/bash
 
-#! /bin/bash
-
 # Установка утилит
 echo nameserver 8.8.8.8 >> /etc/resolv.conf && apt-get update && apt-get install wget dos2unix task-samba-dc -y
 
@@ -19,4 +17,4 @@ samba-tool user add hquser3 P@ssw0rd
 samba-tool user add hquser4 P@ssw0rd
 samba-tool user add hquser5 P@ssw0rd
 samba-tool group add hq
-samba-tool group addmembers hq hquser1, hquser2, hquser3, hquser4, hquser5
+samba-tool group addmembers hq hquser1,hquser2,hquser3,hquser4,hquser5
