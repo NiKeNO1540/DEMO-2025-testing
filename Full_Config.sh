@@ -73,4 +73,6 @@ sudo cat /etc/passwd | sudo grep root && sudo id root
 EOF
 
 
+
+
 hostnamectl set-hostname ISP; exec bash
