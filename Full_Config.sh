@@ -67,12 +67,27 @@ ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-2.sh
 
 sleep 15
 
-sshpass -p 'toor' ssh-copy-id -p 2222 hquser1@172.16.1.4
+ssh -p 2222 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
+
+sleep 15
+
+ssh -p 2222 root@172.16.1.4 "bash -s" < cli-sssd-part2.sh
+
+sleep 15
+
+sshpass -p 'P@ssw0rd' ssh-copy-id -p 2222 hquser1@172.16.1.4
 cat << EOF | ssh -p 2222 hquser1@172.16.1.4
 sudo cat /etc/passwd | sudo grep root && sudo id root
 EOF
 
 
+apt-get install chrony -y
 
+cat << EOF > /etc/chrony.conf
+server 127.0.0.1 iburst prefer
+hwtimestamp *
+local stratum 5
+allow 0/0
+EOF
 
 hostnamectl set-hostname ISP; exec bash
