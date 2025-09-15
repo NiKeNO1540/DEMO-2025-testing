@@ -80,7 +80,6 @@ cat << EOF | ssh -p 2222 hquser1@172.16.1.4
 sudo cat /etc/passwd | sudo grep root && sudo id root
 EOF
 
-
 apt-get install chrony -y
 
 cat << EOF > /etc/chrony.conf
@@ -89,5 +88,26 @@ hwtimestamp *
 local stratum 5
 allow 0/0
 EOF
+
+systemctl enable --now chronyd
+
+cat << EOF | ssh -p 2222 root@172.16.1.4
+apt-get install chrony -c
+echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+systemctl enable --now chronyd
+EOF
+
+cat << EOF | ssh -p 2026 root@172.16.1.4
+apt-get install chrony -c
+echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+systemctl enable --now chronyd
+EOF
+
+cat << EOF | ssh -p 2026 root@172.16.2.5
+apt-get install chrony -c
+echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
+systemctl enable --now chronyd
+EOF
+
 
 hostnamectl set-hostname ISP; exec bash
