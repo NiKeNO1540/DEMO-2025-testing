@@ -166,21 +166,21 @@ fi
 
 echo "Смена название машины"
 log_message "Смена hostname на удаленных машинах"
-echo "hostnamectl set-hostname hq-srv.au-team.irpo; exec bash" | ssh -p 2026 root@172.16.1.4
+echo "hostnamectl set-hostname hq-srv.au-team.irpo; exec bash" | sshpass -p 'toor' ssh -p 2026 root@172.16.1.4
 if [ $? -eq 0 ]; then
     log_message "Hostname изменен на hq-srv.au-team.irpo (172.16.1.4:2026)"
 else
     log_message "Ошибка смены hostname на 172.16.1.4:2026"
 fi
 
-echo "hostnamectl set-hostname hq-cli.au-team.irpo; exec bash" | ssh -p 2222 root@172.16.1.4
+echo "hostnamectl set-hostname hq-cli.au-team.irpo; exec bash" | sshpass -p 'toor' ssh -p 2222 root@172.16.1.4
 if [ $? -eq 0 ]; then
     log_message "Hostname изменен на hq-cli.au-team.irpo (172.16.1.4:2222)"
 else
     log_message "Ошибка смены hostname на 172.16.1.4:2222"
 fi
 
-echo "hostnamectl set-hostname br-srv.au-team.irpo; exec bash" | ssh -p 2026 root@172.16.2.5
+echo "hostnamectl set-hostname br-srv.au-team.irpo; exec bash" | sshpass -p 'toor'  ssh -p 2026 root@172.16.2.5
 if [ $? -eq 0 ]; then
     log_message "Hostname изменен на br-srv.au-team.irpo (172.16.2.5:2026)"
 else
@@ -189,7 +189,7 @@ fi
 
 echo "Настройка DNS"
 log_message "Запуск HQ-SRV-Launch.sh на удаленном хосте"
-ssh -p 2026 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
+sshpass -p 'toor' ssh -p 2026 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
 if [ $? -eq 0 ]; then
     log_message "HQ-SRV-Launch.sh выполнен успешно"
 else
@@ -198,7 +198,7 @@ fi
 
 echo "Настройка Samba"
 log_message "Запуск samba-part-1.sh на удаленном хосте"
-ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-1.sh
+sshpass -p 'toor' ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-1.sh
 if [ $? -eq 0 ]; then
     log_message "samba-part-1.sh выполнен успешно"
 else
@@ -256,24 +256,6 @@ log_message "Ожидание 15 секунд"
 sleep 15
 log_message "Ожидание завершено"
 
-log_message "Копирование ключа на hquser1"
-sshpass -p 'P@ssw0rd' ssh-copy-id -p 2222 hquser1@172.16.1.4
-if [ $? -eq 0 ]; then
-    log_message "Ключ скопирован на hquser1@172.16.1.4:2222"
-else
-    log_message "Ошибка копирования ключа на hquser1@172.16.1.4:2222"
-fi
-
-log_message "Проверка прав доступа"
-cat << EOF | ssh -p 2222 hquser1@172.16.1.4
-sudo cat /etc/passwd | sudo grep root && sudo id root
-EOF
-if [ $? -eq 0 ]; then
-    log_message "Права доступа проверены"
-else
-    log_message "Ошибка проверки прав доступа"
-fi
-
 log_message "Установка chrony"
 apt-get install chrony -y
 if [ $? -eq 0 ]; then
@@ -300,7 +282,7 @@ else
 fi
 
 log_message "Настройка chrony на удаленных хостах"
-cat << EOF | ssh -p 2222 root@172.16.1.4
+cat << EOF | sshpass -p 'toor' ssh -p 2222 root@172.16.1.4
 apt-get install chrony -y
 echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
@@ -311,7 +293,7 @@ else
     log_message "Ошибка настройки chrony на 172.16.1.4:2222"
 fi
 
-cat << EOF | ssh -p 2026 root@172.16.1.4
+cat << EOF | sshpass -p 'toor' ssh -p 2026 root@172.16.1.4
 apt-get install chrony -y
 echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
@@ -322,7 +304,7 @@ else
     log_message "Ошибка настройки chrony на 172.16.1.4:2026"
 fi
 
-cat << EOF | ssh -p 2026 root@172.16.2.5
+cat << EOF | sshpass -p 'toor' ssh -p 2026 root@172.16.2.5
 apt-get install chrony -y
 echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
