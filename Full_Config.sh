@@ -206,10 +206,11 @@ else
 fi
 
 log_message "Настройка DNS на клиенте"
-cat << EOF | ssh -p 2222 root@172.16.1.4
+cat << EOF | sshpass -p 'toor' ssh -p 2222 root@172.16.1.4
 echo nameserver 8.8.8.8 >> /etc/resolv.conf && apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 EOF
+
 if [ $? -eq 0 ]; then
     log_message "DNS настройки применены на клиенте"
 else
@@ -217,11 +218,11 @@ else
 fi
 
 log_message "Перезагрузка клиента"
-echo "reboot" | ssh -p 2222 root@172.16.1.4
+echo "reboot" | sshpass -p 'toor' ssh -p 2222 root@172.16.1.4
 log_message "Клиент перезагружается"
 
 log_message "Запуск samba-part-2.sh"
-ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-2.sh
+sshpass -p 'toor' ssh -p 2026 root@172.16.2.5 "bash -s" < samba-part-2.sh
 if [ $? -eq 0 ]; then
     log_message "samba-part-2.sh выполнен успешно"
 else
@@ -233,7 +234,7 @@ sleep 15
 log_message "Ожидание завершено"
 
 log_message "Запуск cli-sssd-part1.sh"
-ssh -p 2222 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
+sshpass -p 'toor' ssh -p 2222 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
 if [ $? -eq 0 ]; then
     log_message "cli-sssd-part1.sh выполнен успешно"
 else
@@ -245,7 +246,7 @@ sleep 15
 log_message "Ожидание завершено"
 
 log_message "Запуск cli-sssd-part2.sh"
-ssh -p 2222 root@172.16.1.4 "bash -s" < cli-sssd-part2.sh
+sshpass -p 'toor' ssh -p 2222 root@172.16.1.4 "bash -s" < cli-sssd-part2.sh
 if [ $? -eq 0 ]; then
     log_message "cli-sssd-part2.sh выполнен успешно"
 else
