@@ -207,7 +207,21 @@ fi
 
 log_message "Настройка DNS на клиенте"
 cat << EOF | sshpass -p 'toor' ssh -p 2222 root@172.16.1.4
-echo nameserver 8.8.8.8 >> /etc/resolv.conf && apt-get update && apt-get install bind-utils -y
+echo nameserver 8.8.8.8 >> /etc/resolv.conf
+sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp' /etc/net/ifaces/ens20/options
+systemctl restart network
+EOF
+
+if [ $? -eq 0 ]; then
+    log_message "Изменён на DHCP тип у клиента, режим ошидания"
+else
+    log_message "Ошибка изменения."
+fi
+
+sleep 8
+
+cat << EOF | sshpass -p 'toor' ssh -p 2222 root@172.16.1.4
+apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 EOF
 
