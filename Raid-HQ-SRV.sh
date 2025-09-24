@@ -3,7 +3,14 @@
 mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
 mdadm --detail -scan --verbose > /etc/mdadm.conf
 apt-get update && apt-get install fdisk -y
-echo -e "n\np\n1\n2048\n4186111\nw" | fdisk /dev/md0
+fdisk /dev/md0 << EOF
+n
+p
+1
+2048
+4186111
+w
+EOF
 
 mkfs.ext4 /dev/md0p1
 cat << EOF >> /etc/fstab
