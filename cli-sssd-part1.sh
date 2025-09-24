@@ -1,5 +1,8 @@
 #! /bin/bash
 
+useradd remote_user -u 2026
+echo -e "P@ssw0rd\nP@ssw0rd" | passwd remote_user
+
 apt-get install sudo libsss_sudo -y
 control sudo public
 sed -i '19 a\
