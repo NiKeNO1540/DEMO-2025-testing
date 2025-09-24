@@ -610,7 +610,8 @@ if ! check_stage 13; then
     log_message "Начало этапа 13: Настройка NGINX прокси на ISP"
     
     log_message "Установка nginx и apache2-utils"
-    apt-get install nginx apache2-utils -y
+    apt-get install nginx -y
+    apt-get install apache2-htpasswd -y
     if [ $? -eq 0 ]; then
         log_message "nginx и apache2-utils успешно установлены"
     else
