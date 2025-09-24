@@ -478,10 +478,47 @@ else
     log_message "Этап 8 уже выполнен, пропускаем"
 fi
 
-# Этап 9: Финальные настройки
+# Этап 9: Настройка RAID
 if ! check_stage 9; then
-    echo "=== Этап 9: Финальные настройки ==="
-    log_message "Начало этапа 9: Финальные настройки"
+    echo "=== Этап 9: Добавление RAID ==="
+    log_message "Начало этапа 9: Настройка RAID массивов"
+    
+    log_message "Настройка RAID на HQ-SRV"
+    if [ -f "Raid-HQ-SRV.sh" ]; then
+        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < Raid-HQ-SRV.sh
+        if [ $? -eq 0 ]; then
+            log_message "Raid-HQ-SRV.sh выполнен успешно"
+        else
+            log_message "Ошибка выполнения Raid-HQ-SRV.sh"
+        fi
+    else
+        log_message "Файл Raid-HQ-SRV.sh не найден"
+    fi
+
+    log_message "Настройка RAID на HQ-CLI"
+    if [ -f "Raid-HQ-CLI.sh" ]; then
+        sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < Raid-HQ-CLI.sh
+        if [ $? -eq 0 ]; then
+            log_message "Raid-HQ-CLI.sh выполнен успешно"
+        else
+            log_message "Ошибка выполнения Raid-HQ-CLI.sh"
+        fi
+    else
+        log_message "Файл Raid-HQ-CLI.sh не найден"
+    fi
+
+    log_message "Ожидание 10 секунд для завершения настройки RAID"
+    sleep 10
+    
+    mark_stage_completed 9
+else
+    log_message "Этап 9 уже выполнен, пропускаем"
+fi
+
+# Этап 10: Финальные настройки
+if ! check_stage 10; then
+    echo "=== Этап 10: Финальные настройки ==="
+    log_message "Начало этапа 10: Финальные настройки"
     
     log_message "Смена hostname локальной машины"
     hostnamectl set-hostname ISP
@@ -510,9 +547,9 @@ EOF
         log_message "Ошибка проверки прав доступа"
     fi
     
-    mark_stage_completed 9
+    mark_stage_completed 10
 else
-    log_message "Этап 9 уже выполнен, пропускаем"
+    log_message "Этап 10 уже выполнен, пропускаем"
 fi
 
 echo "exec bash"
