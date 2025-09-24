@@ -1,7 +1,7 @@
 #! /bin/bash
 
-useradd sshuser -u 1010
-echo -e "P@ssw0rd\nP@ssw0rd" | passwd sshuser
+useradd remote_user -u 2026
+echo -e "P@ssw0rd\nP@ssw0rd" | passwd remote_user
 
 echo nameserver 8.8.8.8 >> /etc/resolv.conf
 
