@@ -47,7 +47,7 @@ sed -i "s/\$dbname = .*;/\$dbname = 'webdb';/" /var/www/html/index.php
 sed -i "s/\$password = .*;/\$password = 'P@ssw0rd';/" /var/www/html/index.php
 sed -i "s/\$username = .*;/\$username = 'webc';/" /var/www/html/index.php
 
-sed -i 's/DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm/DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm/' /etc/httpd2/conf/mods-enabled/dir.conf
+sed -i 's/\tDirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm/\tDirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm/' /etc/httpd2/conf/mods-enabled/dir.conf
 rm -rf /var/www/html/index.html
 
 # Перезагрузка Apache
