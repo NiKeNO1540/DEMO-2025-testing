@@ -2,7 +2,6 @@
 
 apt-get update && apt-get install -y docker-compose docker-engine
 systemctl enable --now docker
-systemctl status docker
 mount -o loop /dev/sr0
 docker load -i /media/ALTLinux/docker/site_latest.tar
 docker load -i /media/ALTLinux/docker/mariadb_latest.tar
