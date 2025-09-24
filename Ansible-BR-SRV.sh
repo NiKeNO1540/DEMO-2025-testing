@@ -34,9 +34,7 @@ ansible_host_key_checking=false' /etc/ansible/ansible.cfg
 
 ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa -q
 apt-get install sshpass
-ssh-keyscan -H 192.168.1.10 >> ~/.ssh/known_hosts
-ssh-keyscan -H 192.168.2.10 >> ~/.ssh/known_hosts
 sshpass -p "P@ssw0rd" ssh-copy-id -p 2026 remote_user@192.168.1.10
-sshpass -p "P@ssw0rd" ssh-copy-id -p 2026 remote_user@192.168.2.10
+sshpass -p "P@ssw0rd" ssh-copy-id -p 2222 remote_user@192.168.2.10
 
 ansible -m all ping
