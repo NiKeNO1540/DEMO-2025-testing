@@ -1,0 +1,42 @@
+#! /bin/bash
+
+apt-get update && apt-get install ansible -y
+
+cat << EOF >> /etc/ansible/hosts
+VMs:
+  hosts:
+    HQ-SRV:
+      ansible_host: 192.168.1.10
+      ansible_user: remote_user
+      ansible_port: 2026
+    HQ-CLI:
+      ansible_host: 192.168.2.10
+      ansible_user: remote_user
+      ansible_port: 2026
+    HQ-RTR:
+      ansible_host: 192.168.1.1
+      ansible_user: net_admin
+      ansible_password: P@ssw0rd
+      ansible_connection: network_cli
+      ansible_network_os: ios
+    BR-RTR:
+      ansible_host: 192.168.3.1
+      ansible_user: net_admin
+      ansible_password: P@ssw0rd
+      ansible_connection: network_cli
+      ansible_network_os: ios
+EOF
+
+sed -i '10 a\
+ansible_python_interpreter=/usr/bin/python3\
+interpreter_python=auto_silent\
+ansible_host_key_checking=false' /etc/ansible/ansible.cfg
+
+ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa -q
+apt-get install sshpass
+ssh-keyscan -H 192.168.1.10 >> ~/.ssh/known_hosts
+ssh-keyscan -H 192.168.2.10 >> ~/.ssh/known_hosts
+sshpass -p "P@ssw0rd" ssh-copy-id -p 2026 remote_user@192.168.1.10
+sshpass -p "P@ssw0rd" ssh-copy-id -p 2026 remote_user@192.168.2.10
+
+ansible -m all ping
