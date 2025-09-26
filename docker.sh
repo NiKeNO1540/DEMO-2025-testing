@@ -6,6 +6,8 @@ mount -o loop /dev/sr0
 docker load -i /media/ALTLinux/docker/site_latest.tar
 docker load -i /media/ALTLinux/docker/mariadb_latest.tar
 
+
+cat << EOF >> launch.sh
 docker compose -f site.yml up -d 
 sleep 5 
 docker exec -it db mysql -u root -pPassw0rd -e "
@@ -19,3 +21,7 @@ GRANT ALL PRIVILEGES ON testdb.* TO 'test'@'%';
 
 -- Обновить привилегии
 FLUSH PRIVILEGES;"
+EOF
+
+chmod +x /root/test.sh
+./test.sh
