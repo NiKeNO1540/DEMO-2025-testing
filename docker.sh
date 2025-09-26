@@ -23,5 +23,5 @@ GRANT ALL PRIVILEGES ON testdb.* TO 'test'@'%';
 FLUSH PRIVILEGES;"
 EOF
 
-chmod +x /root/test.sh
-./test.sh
+chmod +x /root/launch.sh
+./launch.sh
