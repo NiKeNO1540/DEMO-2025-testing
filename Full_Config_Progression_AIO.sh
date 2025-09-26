@@ -39,6 +39,24 @@ if [ ! -f "$PROGRESS_FILE" ]; then
     log_message "Файл прогресса инициализирован: $PROGRESS_FILE"
 fi
 
+# ====== Управление шагами внутри этапа ======
+
+# Проверка выполнения шага
+check_step() {
+    local stage=$1
+    local step=$2
+    grep -q "STAGE_${stage}_STEP_${step}_COMPLETED" "$PROGRESS_FILE" 2>/dev/null
+    return $?
+}
+
+# Отметка выполнения шага
+mark_step_completed() {
+    local stage=$1
+    local step=$2
+    echo "STAGE_${stage}_STEP_${step}_COMPLETED $(date '+%Y-%m-%d %H:%M:%S')" >> "$PROGRESS_FILE"
+    log_message "Шаг $step из этапа $stage отмечен как выполненный"
+}
+
 echo "Начало выполнения скрипта настройки ISP"
 log_message "Старт скрипта настройки ISP (режим продолжения)"
 
@@ -304,104 +322,157 @@ else
 fi
 
 # Этап 7: Настройка DNS и Samba
+# ====== Настройки ======
+STATUS_FILE=".stage_status"
+
+check_step() {
+    local step="$1"
+    grep -q "^$step\$" "$STATUS_FILE" 2>/dev/null
+}
+
+mark_step_completed() {
+    local step="$1"
+    echo "$step" >> "$STATUS_FILE"
+}
+
+# ====== Этап 7: Настройка DNS и Samba ======
 if ! check_stage 7; then
     echo "=== Этап 7: Настройка DNS и Samba ==="
     log_message "Начало этапа 7: Настройка DNS и Samba"
-    
-    log_message "Запуск HQ-SRV-Launch.sh на удаленном хосте"
-    if [ -f "HQ-SRV-Launch.sh" ]; then
-        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
-        if [ $? -eq 0 ]; then
-            log_message "HQ-SRV-Launch.sh выполнен успешно"
-        else
-            log_message "Ошибка выполнения HQ-SRV-Launch.sh"
+
+    # --- Шаг 7.1 Запуск HQ-SRV-Launch.sh ---
+    if ! check_step "7.1_HQ-SRV-Launch"; then
+        log_message "Запуск HQ-SRV-Launch.sh на удаленном хосте"
+        if [ -f "HQ-SRV-Launch.sh" ]; then
+            sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
+            if [ $? -eq 0 ]; then
+                log_message "HQ-SRV-Launch.sh выполнен успешно"
+                mark_step_completed "7.1_HQ-SRV-Launch"
+            else
+                log_message "Ошибка выполнения HQ-SRV-Launch.sh"
+            fi
         fi
+    else
+        log_message "Шаг 7.1 уже выполнен, пропускаем"
     fi
 
-    log_message "Запуск samba-part-1.sh на удаленном хосте"
-    if [ -f "samba-part-1.sh" ]; then
-        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < samba-part-1.sh
-        if [ $? -eq 0 ]; then
-            log_message "samba-part-1.sh выполнен успешно"
-        else
-            log_message "Ошибка выполнения samba-part-1.sh"
+    # --- Шаг 7.2 Запуск samba-part-1.sh ---
+    if ! check_step "7.2_samba-part-1"; then
+        log_message "Запуск samba-part-1.sh"
+        if [ -f "samba-part-1.sh" ]; then
+            sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < samba-part-1.sh
+            if [ $? -eq 0 ]; then
+                log_message "samba-part-1.sh выполнен успешно"
+                mark_step_completed "7.2_samba-part-1"
+            else
+                log_message "Ошибка выполнения samba-part-1.sh"
+            fi
         fi
+    else
+        log_message "Шаг 7.2 уже выполнен, пропускаем"
     fi
 
-    log_message "Настройка DNS на клиенте"
-    cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+    # --- Шаг 7.3 Настройка клиента на DHCP ---
+    if ! check_step "7.3_set-dhcp"; then
+        log_message "Настройка DNS: переключение клиента в DHCP"
+        cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
 systemctl restart network
 EOF
-
-    if [ $? -eq 0 ]; then
-        log_message "Изменён на DHCP тип у клиента, режим ожидания"
+        if [ $? -eq 0 ]; then
+            log_message "Клиент переведён в DHCP"
+            mark_step_completed "7.3_set-dhcp"
+        else
+            log_message "Ошибка при переключении клиента в DHCP"
+        fi
     else
-        log_message "Ошибка изменения."
+        log_message "Шаг 7.3 уже выполнен"
     fi
 
-    sleep 8
-
-    cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+    # --- Шаг 7.4 DNS настройка клиента ---
+    if ! check_step "7.4_dns-client"; then
+        sleep 8
+        log_message "Настройка DNS на клиенте"
+        cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 EOF
-
-    if [ $? -eq 0 ]; then
-        log_message "DNS настройки применены на клиенте"
+        if [ $? -eq 0 ]; then
+            log_message "DNS настройки успешно применены"
+            mark_step_completed "7.4_dns-client"
+        else
+            log_message "Ошибка настройки DNS"
+        fi
     else
-        log_message "Ошибка настройки DNS на клиенте"
+        log_message "Шаг 7.4 уже выполнен"
     fi
 
-    log_message "Перезагрузка клиента"
-    echo "reboot" | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=5 root@172.16.1.4
-    log_message "Клиент перезагружается"
+    # --- Шаг 7.5 Перезагрузка клиента ---
+    if ! check_step "7.5_reboot-client"; then
+        log_message "Перезагрузка клиента"
+        echo "reboot" | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=5 root@172.16.1.4
+        log_message "Клиент перезагружается, ожидание 30 секунд"
+        sleep 30
+        mark_step_completed "7.5_reboot-client"
+    else
+        log_message "Шаг 7.5 уже выполнен"
+    fi
 
-    log_message "Ожидание 30 секунд для перезагрузки клиента"
-    sleep 30
-
-    log_message "Запуск samba-part-2.sh"
-    if [ -f "samba-part-2.sh" ]; then
-        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < samba-part-2.sh
-        if [ $? -eq 0 ]; then
-            log_message "samba-part-2.sh выполнен успешно"
-        else
-            log_message "Ошибка выполнения samba-part-2.sh"
+    # --- Шаг 7.6 samba-part-2 ---
+    if ! check_step "7.6_samba-part-2"; then
+        log_message "Запуск samba-part-2.sh"
+        if [ -f "samba-part-2.sh" ]; then
+            sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < samba-part-2.sh
+            if [ $? -eq 0 ]; then
+                log_message "samba-part-2.sh выполнен успешно"
+                mark_step_completed "7.6_samba-part-2"
+            else
+                log_message "Ошибка выполнения samba-part-2.sh"
+            fi
         fi
+        sleep 15
+    else
+        log_message "Шаг 7.6 уже выполнен"
     fi
 
-    log_message "Ожидание 15 секунд"
-    sleep 15
-
-    log_message "Запуск cli-sssd-part1.sh"
-    if [ -f "cli-sssd-part1.sh" ]; then
-        sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
-        if [ $? -eq 0 ]; then
-            log_message "cli-sssd-part1.sh выполнен успешно"
-        else
-            log_message "Ошибка выполнения cli-sssd-part1.sh"
+    # --- Шаг 7.7 cli-sssd-part1 ---
+    if ! check_step "7.7_cli-sssd-part1"; then
+        log_message "Запуск cli-sssd-part1.sh"
+        if [ -f "cli-sssd-part1.sh" ]; then
+            sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
+            if [ $? -eq 0 ]; then
+                log_message "cli-sssd-part1.sh выполнен успешно"
+                mark_step_completed "7.7_cli-sssd-part1"
+            else
+                log_message "Ошибка cli-sssd-part1.sh"
+            fi
         fi
+        sleep 15
+    else
+        log_message "Шаг 7.7 уже выполнен"
     fi
 
-    log_message "Ожидание 15 секунд"
-    sleep 15
-
-    log_message "Запуск cli-sssd-part2.sh"
-    if [ -f "cli-sssd-part2.sh" ]; then
-        sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part2.sh
-        if [ $? -eq 0 ]; then
-            log_message "cli-sssd-part2.sh выполнен успешно"
-        else
-            log_message "Ошибка выполнения cli-sssd-part2.sh"
+    # --- Шаг 7.8 cli-sssd-part2 ---
+    if ! check_step "7.8_cli-sssd-part2"; then
+        log_message "Запуск cli-sssd-part2.sh"
+        if [ -f "cli-sssd-part2.sh" ]; then
+            sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part2.sh
+            if [ $? -eq 0 ]; then
+                log_message "cli-sssd-part2.sh выполнен успешно"
+                mark_step_completed "7.8_cli-sssd-part2"
+            else
+                log_message "Ошибка cli-sssd-part2.sh"
+            fi
         fi
+        sleep 15
+    else
+        log_message "Шаг 7.8 уже выполнен"
     fi
 
-    log_message "Ожидание 15 секунд"
-    sleep 15
-    
+    # Помечаем этап 7 целиком
     mark_stage_completed 7
 else
-    log_message "Этап 7 уже выполнен, пропускаем"
+    log_message "Этап 7 уже выполнен ранее, пропускаем"
 fi
 
 # Этап 8: Настройка Chrony
