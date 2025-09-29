@@ -24,4 +24,3 @@ FLUSH PRIVILEGES;"
 EOF
 
 chmod +x /root/launch.sh
-./launch.sh
