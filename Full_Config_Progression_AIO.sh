@@ -295,21 +295,21 @@ if ! check_stage 6; then
     log_message "Начало этапа 6: Смена hostname удаленных машин"
     
     log_message "Смена hostname на удаленных машинах"
-    echo "hostnamectl set-hostname hq-srv.au-team.irpo" | sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4
+    echo "hostnamectl set-hostname hq-srv.au-team.irpo" | sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.1.4
     if [ $? -eq 0 ]; then
         log_message "Hostname изменен на hq-srv.au-team.irpo (172.16.1.4:2026)"
     else
         log_message "Ошибка смены hostname на 172.16.1.4:2026"
     fi
 
-    echo "hostnamectl set-hostname hq-cli.au-team.irpo" | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+    echo "hostnamectl set-hostname hq-cli.au-team.irpo" | sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4
     if [ $? -eq 0 ]; then
         log_message "Hostname изменен на hq-cli.au-team.irpo (172.16.1.4:2222)"
     else
         log_message "Ошибка смены hostname на 172.16.1.4:2222"
     fi
 
-    echo "hostnamectl set-hostname br-srv.au-team.irpo" | sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5
+    echo "hostnamectl set-hostname br-srv.au-team.irpo" | sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.2.5
     if [ $? -eq 0 ]; then
         log_message "Hostname изменен на br-srv.au-team.irpo (172.16.2.5:2026)"
     else
@@ -344,7 +344,7 @@ if ! check_stage 7; then
     if ! check_step "7.1_HQ-SRV-Launch"; then
         log_message "Запуск HQ-SRV-Launch.sh на удаленном хосте"
         if [ -f "HQ-SRV-Launch.sh" ]; then
-            sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
+            sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < HQ-SRV-Launch.sh
             if [ $? -eq 0 ]; then
                 log_message "HQ-SRV-Launch.sh выполнен успешно"
                 mark_step_completed "7.1_HQ-SRV-Launch"
@@ -360,7 +360,7 @@ if ! check_stage 7; then
     if ! check_step "7.2_samba-part-1"; then
         log_message "Запуск samba-part-1.sh"
         if [ -f "samba-part-1.sh" ]; then
-            sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < samba-part-1.sh
+            sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < samba-part-1.sh
             if [ $? -eq 0 ]; then
                 log_message "samba-part-1.sh выполнен успешно"
                 mark_step_completed "7.2_samba-part-1"
@@ -375,7 +375,7 @@ if ! check_stage 7; then
     # --- Шаг 7.3 Настройка клиента на DHCP ---
     if ! check_step "7.3_set-dhcp"; then
         log_message "Настройка DNS: переключение клиента в DHCP"
-        cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+        cat << EOF | sshpass -t -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
 systemctl restart network
 EOF
@@ -393,7 +393,7 @@ EOF
     if ! check_step "7.4_dns-client"; then
         sleep 8
         log_message "Настройка DNS на клиенте"
-        cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+        cat << EOF | sshpass -t -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 EOF
@@ -410,7 +410,7 @@ EOF
     # --- Шаг 7.5 Перезагрузка клиента ---
     if ! check_step "7.5_reboot-client"; then
         log_message "Перезагрузка клиента"
-        echo "reboot" | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=5 root@172.16.1.4
+        echo "reboot" | sshpass -t -p 'toor' ssh -p 2222 -o ConnectTimeout=5 root@172.16.1.4
         log_message "Клиент перезагружается, ожидание 30 секунд"
         sleep 30
         mark_step_completed "7.5_reboot-client"
@@ -439,7 +439,7 @@ EOF
     if ! check_step "7.7_cli-sssd-part1"; then
         log_message "Запуск cli-sssd-part1.sh"
         if [ -f "cli-sssd-part1.sh" ]; then
-            sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
+            sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
             if [ $? -eq 0 ]; then
                 log_message "cli-sssd-part1.sh выполнен успешно"
                 mark_step_completed "7.7_cli-sssd-part1"
@@ -456,7 +456,7 @@ EOF
     if ! check_step "7.8_cli-sssd-part2"; then
         log_message "Запуск cli-sssd-part2.sh"
         if [ -f "cli-sssd-part2.sh" ]; then
-            sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part2.sh
+            sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part2.sh
             if [ $? -eq 0 ]; then
                 log_message "cli-sssd-part2.sh выполнен успешно"
                 mark_step_completed "7.8_cli-sssd-part2"
@@ -510,7 +510,7 @@ EOF
     fi
 
     log_message "Настройка chrony на удаленных хостах"
-    cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+    cat << EOF | sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
 echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
@@ -521,7 +521,7 @@ EOF
         log_message "Ошибка настройки chrony на 172.16.1.4:2222"
     fi
 
-    cat << EOF | sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4
+    cat << EOF | sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.1.4
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
 echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
@@ -532,7 +532,7 @@ EOF
         log_message "Ошибка настройки chrony на 172.16.1.4:2026"
     fi
 
-    cat << EOF | sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5
+    cat << EOF | sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.2.5
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
 echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
@@ -556,7 +556,7 @@ if ! check_stage 9; then
     
     log_message "Настройка RAID на HQ-SRV"
     if [ -f "Raid-HQ-SRV.sh" ]; then
-        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < Raid-HQ-SRV.sh
+        sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < Raid-HQ-SRV.sh
         if [ $? -eq 0 ]; then
             log_message "Raid-HQ-SRV.sh выполнен успешно"
         else
@@ -568,7 +568,7 @@ if ! check_stage 9; then
 
     log_message "Настройка RAID на HQ-CLI"
     if [ -f "Raid-HQ-CLI.sh" ]; then
-        sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < Raid-HQ-CLI.sh
+        sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < Raid-HQ-CLI.sh
         if [ $? -eq 0 ]; then
             log_message "Raid-HQ-CLI.sh выполнен успешно"
         else
@@ -593,7 +593,7 @@ if ! check_stage 10; then
     
     log_message "Установка Ansible на BR-SRV"
     if [ -f "Ansible-BR-SRV.sh" ]; then
-        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < Ansible-BR-SRV.sh
+        sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < Ansible-BR-SRV.sh
         if [ $? -eq 0 ]; then
             log_message "Ansible-BR-SRV.sh выполнен успешно"
         else
@@ -630,7 +630,7 @@ if ! check_stage 11; then
 
     log_message "Установка Docker на BR-SRV"
     if [ -f "docker.sh" ]; then
-        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < docker.sh
+        sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.2.5 "bash -s" < docker.sh
         if [ $? -eq 0 ]; then
             log_message "docker.sh выполнен успешно"
         else
@@ -666,7 +666,7 @@ if ! check_stage 12; then
     
     log_message "Установка сайта на HQ-SRV"
     if [ -f "site.sh" ]; then
-        sshpass -p 'toor' ssh -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < site.sh
+        sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < site.sh
         if [ $? -eq 0 ]; then
             log_message "site.sh выполнен успешно"
         else
@@ -781,7 +781,7 @@ if ! check_stage 14; then
     log_message "Начало этапа 14: Установка Yandex Browser на HQ-CLI"
     
     log_message "Установка Yandex Browser на HQ-CLI"
-    echo "apt-get update && apt-get install yandex-browser -y" | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+    echo "apt-get update && apt-get install yandex-browser -y" | sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4
     if [ $? -eq 0 ]; then
         log_message "Yandex Browser успешно установлен на HQ-CLI"
     else
