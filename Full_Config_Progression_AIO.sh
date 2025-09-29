@@ -640,6 +640,17 @@ if ! check_stage 11; then
         log_message "Файл docker.sh не найден"
     fi
 
+    if [ -f "docker-br-srv.exp" ]; then
+        expect docker-br-srv.exp
+        if [ $? -eq 0 ]; then
+            log_message "docker-br-srv.exp выполнен успешно"
+        else
+            log_message "Ошибка выполнения docker-br-srv.exp"
+        fi
+    else
+        log_message "Файл docker-br-srv.exp не найден"
+    fi
+
     log_message "Ожидание 10 секунд для завершения установки Docker"
     sleep 10
     
