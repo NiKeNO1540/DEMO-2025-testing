@@ -142,5 +142,5 @@ systemctl restart network
 # Инструкция для активации ISP-a
 
 ```bash
-apt-get update && apt-get install git -y && git clone https://github.com/NiKeNO1540/DEMO-2025-testing && chmod +x DEMO-2025-testing/Full_Config.sh && ./DEMO-2025-testing/Full_Config.sh
+apt-get update && apt-get install git -y && git clone https://github.com/NiKeNO1540/DEMO-2025-testing && chmod +x DEMO-2025-testing/Full_Config_Progression_AIO.sh && ./DEMO-2025-testing/Full_Config_Progression_AIO.sh
 ```
