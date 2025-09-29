@@ -45,8 +45,7 @@ if {$force_conservative} {
 set timeout -1
 spawn sshpass -p P@ssw0rd ssh -p 2026 root@172.16.2.5
 match_max 100000
-expect -exact "Last login: Mon Sep 29 09:19:47 2025 from 172.16.2.1\r\r
->\[root@br-srv ~\]# "
+expect -exact ">\[root@br-srv ~\]# "
 send -- "./launch.sh && exi"
 expect -exact "xi"
 send -- "t\r"
