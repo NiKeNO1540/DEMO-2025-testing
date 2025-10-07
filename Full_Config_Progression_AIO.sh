@@ -375,7 +375,7 @@ if ! check_stage 7; then
     # --- Шаг 7.3 Настройка клиента на DHCP ---
     if ! check_step "7.3_set-dhcp"; then
         log_message "Настройка DNS: переключение клиента в DHCP"
-        cat << EOF | sshpass -t -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+        cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
 systemctl restart network
 EOF
@@ -393,7 +393,7 @@ EOF
     if ! check_step "7.4_dns-client"; then
         sleep 8
         log_message "Настройка DNS на клиенте"
-        cat << EOF | sshpass -t -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
+        cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 hostnamectl set-hostname hq-cli.au-team.irpo
@@ -411,7 +411,7 @@ EOF
     # --- Шаг 7.5 Перезагрузка клиента ---
     if ! check_step "7.5_reboot-client"; then
         log_message "Перезагрузка клиента"
-        echo "reboot" | sshpass -t -p 'toor' ssh -p 2222 -o ConnectTimeout=5 root@172.16.1.4
+        echo "reboot" | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=5 root@172.16.1.4
         log_message "Клиент перезагружается, ожидание 30 секунд"
         sleep 30
         mark_step_completed "7.5_reboot-client"
