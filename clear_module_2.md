@@ -1,5 +1,40 @@
 # Чистый код, используемый в скриптах, предполагается, что будет использоваться строго после полного выполнения 1-го модуля
 
+## Полная конфигурация (Без разделения на пункты, тем, кому нужен чистый код)
+
+### HQ-RTR
+
+```tcl
+en
+conf
+ip nat source static tcp 192.168.1.10 80 172.16.1.4 8080
+ip nat source static tcp 192.168.1.10 2026 172.16.1.4 2026
+ip nat source static tcp 192.168.2.10 2222 172.16.1.4 2222
+end
+wr
+```
+
+### BR-RTR
+
+```tcl
+en
+conf
+ip nat source static tcp 192.168.3.10 8080 172.16.2.5 8080
+ip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026
+end
+wr
+```
+
+```bash
+echo "server=/br-srv.au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
+systemctl restart dnsmasq
+```
+
+
+---
+
+
+
 ## SAMBA-DC
 
 ### HQ-SRV
@@ -76,4 +111,298 @@ sudoers: files sss' /etc/nsswitch.conf
 rm -rf /var/lib/sss/db/*
 sss_cache -E
 systemctl restart sssd
+```
+
+## Raid
+
+### HQ-SRV
+
+```bash
+mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
+mdadm --detail -scan --verbose > /etc/mdadm.conf
+apt-get update && apt-get install fdisk -y
+fdisk /dev/md0 << EOF
+n
+p
+1
+2048
+4186111
+w
+EOF
+
+mkfs.ext4 /dev/md0p1
+cat << EOF >> /etc/fstab
+/dev/md0p1  /raid  ext4  defaults  0  0
+EOF
+
+mkdir /raid
+mount -a
+
+apt-get install nfs-server -y
+mkdir /raid/nfs
+chown 99:99 /raid/nfs
+chmod 777 /raid/nfs
+
+cat << EOF >> /etc/exports
+/raid/nfs  192.168.2.0/28(rw,sync,no_subtree_check)
+EOF
+exportfs -a
+exportfs -v
+systemctl enable nfs
+systemctl restart nfs
+```
+
+### HQ-CLI
+
+```bash
+apt-get update && apt-get install nfs-clients -y
+mkdir -p /mnt/nfs
+cat << EOF >> /etc/fstab
+192.168.1.10:/raid/nfs  /mnt/nfs  nfs  intr,soft,_netdev,x-systemd.automount  0  0
+EOF
+mount -a
+mount -v
+touch /mnt/nfs/test
+```
+
+## Chrony
+
+### ISP
+
+```bash
+apt-get install chrony -y
+cat << EOF > /etc/chrony.conf
+server 127.0.0.1 iburst prefer
+hwtimestamp *
+local stratum 5
+allow 0/0
+EOF
+systemctl enable --now chronyd
+```
+
+### HQ-CLI
+
+```bash
+apt-get install chrony -y
+echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+systemctl enable --now chronyd
+```
+
+### HQ-SRV
+
+```bash
+apt-get install chrony -y
+echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+systemctl enable --now chronyd
+```
+
+### BR-SRV
+
+```bash
+apt-get install chrony -y
+echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
+systemctl enable --now chronyd
+```
+
+## Ansible + Динамическая трансляция портов (Делается только для того, чтобы можно было автоматизировать)
+
+### HQ-RTR
+
+```tcl
+en
+conf
+ip nat source static tcp 192.168.1.10 80 172.16.1.4 8080
+ip nat source static tcp 192.168.1.10 2026 172.16.1.4 2026
+ip nat source static tcp 192.168.2.10 2222 172.16.1.4 2222
+end
+wr
+```
+
+### BR-RTR
+
+```tcl
+en
+conf
+ip nat source static tcp 192.168.3.10 8080 172.16.2.5 8080
+ip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026
+end
+wr
+```
+
+### BR-SRV
+
+```bash
+apt-get update && apt-get install ansible -y
+
+cat << EOF >> /etc/ansible/hosts
+VMs:
+  hosts:
+    HQ-SRV:
+      ansible_host: 172.16.1.4
+      ansible_user: remote_user
+      ansible_port: 2026
+    HQ-CLI:
+      ansible_host: 172.16.1.4
+      ansible_user: remote_user
+      ansible_port: 2222
+    HQ-RTR:
+      ansible_host: 192.168.1.1
+      ansible_user: net_admin
+      ansible_password: P@ssw0rd
+      ansible_connection: network_cli
+      ansible_network_os: ios
+    BR-RTR:
+      ansible_host: 192.168.3.1
+      ansible_user: net_admin
+      ansible_password: P@ssw0rd
+      ansible_connection: network_cli
+      ansible_network_os: ios
+EOF
+
+sed -i '10 a\
+ansible_python_interpreter=/usr/bin/python3\
+interpreter_python=auto_silent\
+ansible_host_key_checking=false' /etc/ansible/ansible.cfg
+
+ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa -q
+apt-get install sshpass -y
+grep -q "172.16.1.4:2026" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2026 172.16.1.4 >> ~/.ssh/known_hosts
+grep -q "172.16.1.4:2222" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2222 172.16.1.4 >> ~/.ssh/known_hosts
+sshpass -p "P@ssw0rd" ssh-copy-id -p 2026 remote_user@172.16.1.4
+sshpass -p "P@ssw0rd" ssh-copy-id -p 2222 remote_user@172.16.1.4
+
+ansible all -m ping
+```
+
+## Docker
+
+### BR-SRV
+
+```bash
+apt-get update && apt-get install -y docker-compose docker-engine
+systemctl enable --now docker
+mount -o loop /dev/sr0
+docker load -i /media/ALTLinux/docker/site_latest.tar
+docker load -i /media/ALTLinux/docker/mariadb_latest.tar
+
+
+cat << EOF >> launch.sh
+docker compose -f site.yml up -d 
+sleep 5 
+docker exec -it db mysql -u root -pPassw0rd -e "
+CREATE DATABASE IF NOT EXISTS testdb;
+
+CREATE USER IF NOT EXISTS 'test'@'%' IDENTIFIED BY 'Passw0rd';
+
+GRANT ALL PRIVILEGES ON testdb.* TO 'test'@'%';
+
+FLUSH PRIVILEGES;"
+EOF
+
+chmod +x /root/launch.sh
+./launch.sh
+```
+
+## Web-Interface
+
+### HQ-SRV
+
+```bash
+apt-get update
+apt-get install apache2 php8.2 apache2-mod_php8.2 mariadb-server php8.2-{opcache,curl,gd,intl,mysqli,xml,xmlrpc,ldap,zip,soap,mbstring,json,xmlreader,fileinfo,sodium} -y
+
+systemctl enable --now httpd2 mariadb
+
+mkdir -p /mnt/additional
+mount /dev/sr0 /mnt/additional -o ro
+
+mkdir -p /tmp/web_setup
+cp -r /mnt/additional/web/* /tmp/web_setup/
+
+mysql -e "CREATE DATABASE webdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -e "CREATE USER 'webc'@'localhost' IDENTIFIED BY 'P@ssw0rd';"
+mysql -e "GRANT ALL PRIVILEGES ON webdb.* TO 'webc'@'localhost';"
+mysql -e "FLUSH PRIVILEGES;"
+
+cd /tmp/web_setup
+
+file -i dump.sql
+
+if file -i dump.sql | grep -q "utf-16"; then
+    iconv -f UTF-16 -t UTF-8 dump.sql > dump_utf8.sql
+    mysql -u root webdb < dump_utf8.sql
+else
+    mysql -u root webdb < dump.sql
+fi
+
+cp index.php /var/www/html/
+cp -r logo.png /var/www/html/
+
+chown -R apache2:apache2 /var/www/html
+chmod -R 755 /var/www/html
+
+sed -i "s/\$servername = .*;/\$servername = 'localhost';/" /var/www/html/index.php
+sed -i "s/\$dbname = .*;/\$dbname = 'webdb';/" /var/www/html/index.php
+sed -i "s/\$password = .*;/\$password = 'P@ssw0rd';/" /var/www/html/index.php
+sed -i "s/\$username = .*;/\$username = 'webc';/" /var/www/html/index.php
+
+sed -i 's/\tDirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm/\tDirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm/' /etc/httpd2/conf/mods-enabled/dir.conf
+rm -rf /var/www/html/index.html
+
+systemctl restart httpd2
+
+curl -I http://localhost/
+```
+
+## Nginx + Web-Auth
+
+### ISP
+
+```bash
+apt-get install nginx -y
+apt-get install apache2-htpasswd -y
+
+
+log_message "Создание файла аутентификации"
+htpasswd -bc /etc/nginx/.htpasswd WEB P@ssw0rd
+
+mkdir -p /etc/nginx/sites-available.d
+mkdir -p /etc/nginx/sites-enabled.d
+
+cat << EOF > /etc/nginx/sites-available.d/proxy.conf
+server {
+    listen 80;
+    server_name web.au-team.irpo;
+    
+    auth_basic "Restricted Access";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    
+    location / {
+        proxy_pass http://172.16.1.4:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+}
+
+server {
+    listen 80;
+    server_name docker.au-team.irpo;
+    
+    location / {
+        proxy_pass http://172.16.2.5:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+    }
+}
+EOF
+
+
+ln -sf /etc/nginx/sites-available.d/proxy.conf /etc/nginx/sites-enabled.d/
+
+log_message "Проверка конфигурации nginx"
+nginx -t
+
+log_message "Включение и запуск nginx"
+systemctl enable --now nginx
+systemctl restart nginx
 ```
