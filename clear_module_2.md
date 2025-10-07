@@ -5,7 +5,7 @@
 ### HQ-SRV
 
 ```bash
-echo "address=/br-srv.au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
+echo "server=/br-srv.au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
 systemctl restart dnsmasq
 ```
 
