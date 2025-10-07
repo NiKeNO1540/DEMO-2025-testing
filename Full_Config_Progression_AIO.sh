@@ -396,6 +396,7 @@ EOF
         cat << EOF | sshpass -t -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
+hostnamectl set-hostname hq-cli.au-team.irpo
 EOF
         if [ $? -eq 0 ]; then
             log_message "DNS настройки успешно применены"
