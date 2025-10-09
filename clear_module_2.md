@@ -399,6 +399,8 @@ sss_cache -E
 systemctl restart sssd
 ```
 
+> Проверка: в этом же терминале 
+
 ## Raid
 
 ### HQ-SRV
