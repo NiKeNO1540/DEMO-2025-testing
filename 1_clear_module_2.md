@@ -534,6 +534,13 @@ end
 wr
 ```
 
+### HQ-CLI (Используется другой порт, так как невозможно на два устройства сделать перенаправление по одному порту, и это не запрещено заданием)
+```bash
+echo -e "Port 2222" >> /etc/openssh/sshd_config
+systemctl enable --now sshd
+systemctl restart sshd
+```
+
 ### BR-SRV
 
 ```bash
