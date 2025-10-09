@@ -525,6 +525,7 @@ systemctl enable --now chronyd
 <details>
 <summary>Ansible + Динамическая трансляция портов (Делается только для того, чтобы можно было автоматизировать)</summary>
 
+---
 
 <details>
 <summary>Первая версия(Моя, с использованием динамеческого транляции портов)</summary>
@@ -597,6 +598,8 @@ sshpass -p "P@ssw0rd" ssh-copy-id -p 2222 remote_user@172.16.1.4
 ansible all -m ping
 ```
 </details>
+
+---
 
 <details>
 <summary>Вторая версия(От Ахунова)</summary>
