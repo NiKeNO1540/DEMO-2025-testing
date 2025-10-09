@@ -508,32 +508,6 @@ systemctl enable --now chronyd
 
 ---
 
-<details>
-<summary>Ansible + Динамическая трансляция портов (Делается только для того, чтобы можно было автоматизировать)</summary>
-
-### HQ-RTR
-
-```tcl
-en
-conf
-ip nat source static tcp 192.168.1.10 80 172.16.1.4 8080
-ip nat source static tcp 192.168.1.10 2026 172.16.1.4 2026
-ip nat source static tcp 192.168.2.10 2222 172.16.1.4 2222
-end
-wr
-```
-
-### BR-RTR
-
-```tcl
-en
-conf
-ip nat source static tcp 192.168.3.10 8080 172.16.2.5 8080
-ip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026
-end
-wr
-```
-
 ### HQ-CLI (Используется другой порт, так как невозможно на два устройства сделать перенаправление по одному порту, и это не запрещено заданием)
 ```bash
 echo -e "Port 2222" >> /etc/openssh/sshd_config
