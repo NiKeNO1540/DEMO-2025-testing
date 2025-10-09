@@ -18,7 +18,8 @@
 [Nginx+Web-auth](https://github.com/NiKeNO1540/DEMO-2025-testing/blob/main/1clear_module_2.md#nginx--web-auth)
 
 ---
-## Полная конфигурация (Без разделения на пункты, тем, кому нужен чистый код)
+<details>
+<summary>Полная конфигурация (Без разделения на пункты, тем, кому нужен чистый код)</summary>
 
 ### HQ-RTR
 
@@ -331,12 +332,12 @@ apt-get install chrony -y
 echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
+</details>
 
 ---
 
-
-
-## SAMBA-DC
+<details>
+<summary>SAMBA-DC</summary>
 
 ### HQ-SRV
 
@@ -417,9 +418,13 @@ sss_cache -E
 systemctl restart sssd
 ```
 
-> Проверка: в этом же терминале 
+> Проверка: в этом же терминале на HQ-CLI прописать `sudo -l -U hquser1`, или на hquser1 использовать `sudo cat /etc/passwd | sudo grep user | sudo id` 
+</details>
 
-## Raid
+---
+
+<details>
+<summary>Raid</summary>
 
 ### HQ-SRV
 
@@ -470,8 +475,12 @@ mount -a
 mount -v
 touch /mnt/nfs/test
 ```
+</details>
 
-## Chrony
+---
+
+<details>
+<summary>Chrony</summary>
 
 ### ISP
 
@@ -509,8 +518,16 @@ apt-get install chrony -y
 echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
+</details>
 
-## Ansible + Динамическая трансляция портов (Делается только для того, чтобы можно было автоматизировать)
+---
+
+<details>
+<summary>Ansible + Динамическая трансляция портов (Делается только для того, чтобы можно было автоматизировать)</summary>
+
+
+<details>
+<summary>Первая версия(Моя, с использованием динамеческого транляции портов)</summary>
 
 ### HQ-RTR
 
@@ -568,7 +585,7 @@ EOF
 sed -i '10 a\
 ansible_python_interpreter=/usr/bin/python3\
 interpreter_python=auto_silent\
-ansible_host_key_checking=false' /etc/ansible/ansible.cfg
+host_key_checking=false' /etc/ansible/ansible.cfg
 
 ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa -q
 apt-get install sshpass -y
@@ -579,8 +596,28 @@ sshpass -p "P@ssw0rd" ssh-copy-id -p 2222 remote_user@172.16.1.4
 
 ansible all -m ping
 ```
+</details>
 
-## Docker
+<details>
+<summary>Вторая версия(От Ахунова)</summary>
+
+### BR-SRV
+
+```bash
+apt-get update && apt-get install ansible sshpass -y
+echo -e "[s]\nHQ-SRV ansible_host=192.168.1.10\nHQ-CLI ansible_host=192.168.2.10\n[s:vars]\nansible_user=remote_user\nansible_port=2026\nansible_password=P@ssw0rd\n[r]\nHQ-RTR ansible_host=192.168.1.1\nBR-RTR ansible_host=192.168.3.1\n[r:vars]\nansible_user=net_admin\nansible_password=P@ssw0rd\nansible_connection=network_cli\nansible_network_os=ios" > /etc/ansible/hosts
+rm -f /etc/ansible/ansible.cfg
+echo -e "[defaults]\ninterpreter_python=auto_silent\nhost_key_checking=false" > /etc/ansible/ansible.cfg
+```
+
+</details>
+
+</details>
+
+---
+
+<details>
+<summary>Docker</summary>
 
 ### BR-SRV
 
@@ -608,8 +645,12 @@ EOF
 chmod +x /root/launch.sh
 ./launch.sh
 ```
+</details>
 
-## Web-Interface
+---
+
+<details>
+<summary>Web-Interface</summary>
 
 ### HQ-SRV
 
@@ -659,8 +700,41 @@ systemctl restart httpd2
 
 curl -I http://localhost/
 ```
+</details>
 
-## Nginx + Web-Auth
+---
+
+<details>
+<summary>Динамическая трансляция портов(если вы настраивали Ansible по методу Ахунова Вадима, если по моему - пропускайте)</summary>
+
+### HQ-RTR
+
+```tcl
+en
+conf
+ip nat source static tcp 192.168.1.10 80 172.16.1.4 8080
+ip nat source static tcp 192.168.1.10 2026 172.16.1.4 2026
+ip nat source static tcp 192.168.2.10 2222 172.16.1.4 2222
+end
+wr
+```
+
+### BR-RTR
+
+```tcl
+en
+conf
+ip nat source static tcp 192.168.3.10 8080 172.16.2.5 8080
+ip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026
+end
+wr
+```
+</details>
+
+---
+
+<details>
+<summary>Nginx + Web-Auth</summary>
 
 ### ISP
 
@@ -708,3 +782,4 @@ nginx -t
 systemctl enable --now nginx
 systemctl restart nginx
 ```
+</details>
