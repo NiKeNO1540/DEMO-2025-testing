@@ -336,7 +336,7 @@ systemctl restart dnsmasq
 
 ```bash
 if ! grep -q '^nameserver 8\.8\.8\.8$' /etc/resolv.conf; then
-    echo 'nameserver 8.8.8.8' | sudo tee -a /etc/resolv.conf
+    echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 fi
 apt-get update && apt-get install wget dos2unix task-samba-dc -y
 sleep 3
