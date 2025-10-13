@@ -26,6 +26,7 @@ en
 conf
 ip nat source static tcp 192.168.3.10 8080 172.16.2.5 8080
 ip nat source static tcp 192.168.3.10 2026 172.16.2.5 2026
+ntp server 172.16.2.1
 end
 wr
 ```
@@ -90,7 +91,7 @@ systemctl enable --now chronyd
 ### HQ-SRV
 
 ```bash
-echo "server=/br-srv.au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
+echo "server=/au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
 systemctl restart dnsmasq
 mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
 mdadm --detail -scan --verbose > /etc/mdadm.conf
@@ -231,7 +232,7 @@ VMs:
       ansible_port: 2026
     HQ-CLI:
       ansible_host: 172.16.1.4
-      ansible_user: sshuser
+      ansible_user: user
       ansible_port: 2222
     HQ-RTR:
       ansible_host: 192.168.1.1
@@ -257,7 +258,7 @@ apt-get install sshpass -y
 grep -q "172.16.1.4:2026" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2026 172.16.1.4 >> ~/.ssh/known_hosts
 grep -q "172.16.1.4:2222" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2222 172.16.1.4 >> ~/.ssh/known_hosts
 sshpass -p "P@ssw0rd" ssh-copy-id -p 2026 sshuser@172.16.1.4
-sshpass -p "P@ssw0rd" ssh-copy-id -p 2222 sshuser@172.16.1.4
+sshpass -p "resu" ssh-copy-id -p 2222 user@172.16.1.4
 
 ansible all -m ping
 apt-get update && apt-get install -y docker-compose docker-engine
@@ -283,7 +284,7 @@ EOF
 chmod +x /root/launch.sh
 ./launch.sh
 apt-get install chrony -y
-echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.2.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
 
@@ -291,6 +292,9 @@ systemctl enable --now chronyd
 ```bash
 sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
 systemctl restart network
+echo -e "Port 2222" >> /etc/openssh/sshd_config
+systemctl enable --now sshd
+systemctl restart sshd
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 reboot
@@ -315,7 +319,7 @@ mount -a
 mount -v
 touch /mnt/nfs/test
 apt-get install chrony -y
-echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
 </details>
@@ -387,9 +391,6 @@ ldbmodify -v -H /var/lib/samba/private/sam.ldb ntGen.ldif
 ```bash
 sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
 systemctl restart network
-echo -e "Port 2222" >> /etc/openssh/sshd_config
-systemctl enable --now sshd
-systemctl restart sshd
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 reboot
@@ -490,7 +491,7 @@ systemctl enable --now chronyd
 
 ```bash
 apt-get install chrony -y
-echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
 
@@ -498,7 +499,7 @@ systemctl enable --now chronyd
 
 ```bash
 apt-get install chrony -y
-echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
 
@@ -506,9 +507,20 @@ systemctl enable --now chronyd
 
 ```bash
 apt-get install chrony -y
-echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.2.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
+
+### BR-RTR
+
+```tcl
+en
+conf t
+ntp server 172.16.2.1
+end
+wr
+```
+
 </details>
 
 ---
