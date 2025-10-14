@@ -93,7 +93,7 @@ systemctl enable --now chronyd
 ```bash
 echo "server=/au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
 systemctl restart dnsmasq
-echo -e "sshuser:P@ssw0rd" | chpasswd
+echo "sshuser:P@ssw0rd" | chpasswd
 mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
 mdadm --detail -scan --verbose > /etc/mdadm.conf
 apt-get update && apt-get install fdisk -y
@@ -182,7 +182,7 @@ systemctl enable --now chronyd
 systemctl restart network
 echo -e "Port 2222" >> /etc/openssh/sshd_config
 useradd sshuser -u 2026
-passwd -e "P@ssw0rd\nP@ssw0rd" | passwd sshuser
+echo "sshuser:P@ssw0rd" | chpasswd
 systemctl enable --now sshd
 systemctl restart sshd
 ```
