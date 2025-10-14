@@ -176,6 +176,19 @@ echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
 
+### HQ-CLI
+```bash
+systemctl restart network
+echo -e "Port 2222" >> /etc/openssh/sshd_config
+useradd sshuser -u 2026
+passwd -e "P@ssw0rd\nP@ssw0rd" | passwd sshuser
+systemctl enable --now sshd
+systemctl restart sshd
+apt-get update && apt-get install bind-utils -y
+system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
+reboot
+```
+
 ### BR-SRV
 
 ```bash
@@ -232,7 +245,7 @@ VMs:
       ansible_port: 2026
     HQ-CLI:
       ansible_host: 172.16.1.4
-      ansible_user: user
+      ansible_user: sshuser
       ansible_port: 2222
     HQ-RTR:
       ansible_host: 192.168.1.1
@@ -334,16 +347,7 @@ systemctl enable --now chronyd
 ```
 
 ### HQ-CLI
-```bash
-sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
-systemctl restart network
-echo -e "Port 2222" >> /etc/openssh/sshd_config
-systemctl enable --now sshd
-systemctl restart sshd
-apt-get update && apt-get install bind-utils -y
-system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
-reboot
-```
+
 ```bash
 apt-get install sudo libsss_sudo -y
 control sudo public
