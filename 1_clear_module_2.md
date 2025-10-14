@@ -93,6 +93,7 @@ systemctl enable --now chronyd
 ```bash
 echo "server=/au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
 systemctl restart dnsmasq
+echo -e "sshuser:P@ssw0rd" | chpasswd
 mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
 mdadm --detail -scan --verbose > /etc/mdadm.conf
 apt-get update && apt-get install fdisk -y
@@ -193,6 +194,7 @@ if ! grep -q '^nameserver 8\.8\.8\.8$' /etc/resolv.conf; then
     echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 fi
 apt-get update && apt-get install wget dos2unix task-samba-dc -y
+echo -e "sshuser:P@ssw0rd" | chpasswd
 sleep 3
 if ! grep -q '^nameserver 192\.168\.1\.10$' /etc/resolv.conf; then
 echo nameserver 192.168.1.10 >> /etc/resolv.conf
@@ -845,3 +847,7 @@ systemctl enable --now nginx
 systemctl restart nginx
 ```
 </details>
+
+---
+
+### Допольнительная информация 
