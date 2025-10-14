@@ -184,9 +184,6 @@ useradd sshuser -u 2026
 passwd -e "P@ssw0rd\nP@ssw0rd" | passwd sshuser
 systemctl enable --now sshd
 systemctl restart sshd
-apt-get update && apt-get install bind-utils -y
-system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
-reboot
 ```
 
 ### BR-SRV
@@ -348,6 +345,11 @@ systemctl enable --now chronyd
 
 ### HQ-CLI
 
+```bash
+apt-get update && apt-get install bind-utils -y
+system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
+reboot
+```
 ```bash
 apt-get install sudo libsss_sudo -y
 control sudo public
