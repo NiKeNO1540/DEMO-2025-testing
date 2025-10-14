@@ -376,6 +376,7 @@ touch /mnt/nfs/test
 apt-get install chrony -y
 echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
+apt-get install yandex-browser -y
 ```
 </details>
 
