@@ -192,7 +192,7 @@ systemctl restart sshd
 if ! grep -q '^nameserver 8\.8\.8\.8$' /etc/resolv.conf; then
     echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 fi
-/etc/resolv.conf && apt-get update && apt-get install wget dos2unix task-samba-dc -y
+apt-get update && apt-get install wget dos2unix task-samba-dc -y
 sleep 3
 if ! grep -q '^nameserver 192\.168\.1\.10$' /etc/resolv.conf; then
 echo nameserver 192.168.1.10 >> /etc/resolv.conf
