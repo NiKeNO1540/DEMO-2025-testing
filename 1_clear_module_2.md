@@ -851,3 +851,11 @@ systemctl restart nginx
 ---
 
 ### Допольнительная информация 
+
+Это скорее справка, но есть одно но: **Если вы пытаетесь создать юзера вместе с паролем через useradd -p P@ssw0rd sshuser, тогда у вас не получится.** Причина всему этому: неправильное использование команды. Вот правильное использование команды: useradd -p <Хешированный пароль> <Пользователь>, то есть вам нужно **СДЕЛАТЬ** хешированный пароль, и только потом использовать его. Вот пример:
+
+```bash
+openssl passwd -6 P@ssw0rd
+> $6$DIqOPF/8c9KLnJh6$a7Y0TCv7PzGIH5GyApKt5252Gxi/YaiDEBjsoqDyLLVyewPwRj52BE69Sd6MZgYY9Wm8N61.jQlnNqqTDsSg5/
+useradd -p "$6$DIqOPF/8c9KLnJh6$a7Y0TCv7PzGIH5GyApKt5252Gxi/YaiDEBjsoqDyLLVyewPwRj52BE69Sd6MZgYY9Wm8N61.jQlnNqqTDsSg5/" sshuser
+```
