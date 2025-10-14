@@ -350,7 +350,7 @@ chmod +x /root/launch.sh
 ### HQ-CLI
 
 ```bash
-apt-get update && apt-get install bind-utils -y
+apt-get update && apt-get install bind-utils admc -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 reboot
 ```
