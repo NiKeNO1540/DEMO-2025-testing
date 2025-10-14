@@ -275,7 +275,7 @@ apt-get install sshpass -y
 grep -q "172.16.1.4:2026" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2026 172.16.1.4 >> ~/.ssh/known_hosts
 grep -q "172.16.1.4:2222" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2222 172.16.1.4 >> ~/.ssh/known_hosts
 sshpass -p "P@ssw0rd" ssh-copy-id -p 2026 sshuser@172.16.1.4
-sshpass -p "resu" ssh-copy-id -p 2222 user@172.16.1.4
+sshpass -p "P@ssw0rd" ssh-copy-id -p 2222 sshuser@172.16.1.4
 
 ansible all -m ping
 apt-get update && apt-get install -y docker-compose docker-engine
