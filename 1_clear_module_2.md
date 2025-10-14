@@ -173,7 +173,7 @@ systemctl restart httpd2
 curl -I http://localhost/
 
 apt-get install chrony -y
-echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 ```
 
@@ -197,7 +197,7 @@ apt-get update && apt-get install wget dos2unix task-samba-dc -y
 echo -e "sshuser:P@ssw0rd" | chpasswd
 sleep 3
 if ! grep -q '^nameserver 192\.168\.1\.10$' /etc/resolv.conf; then
-echo nameserver 192.168.1.10 >> /etc/resolv.conf
+    echo nameserver 192.168.1.10 >> /etc/resolv.conf
 fi
 sleep 2
 echo 192.168.3.10 br-srv.au-team.irpo >> /etc/hosts
@@ -402,7 +402,9 @@ if ! grep -q '^nameserver 8\.8\.8\.8$' /etc/resolv.conf; then
 fi
 apt-get update && apt-get install wget dos2unix task-samba-dc -y
 sleep 3
-echo nameserver 192.168.1.10 >> /etc/resolv.conf
+if ! grep -q '^nameserver 192\.168\.1\.10$' /etc/resolv.conf; then
+    echo nameserver 192.168.1.10 >> /etc/resolv.conf
+fi
 sleep 2
 echo 192.168.3.10 br-srv.au-team.irpo >> /etc/hosts
 rm -rf /etc/samba/smb.conf
@@ -447,7 +449,6 @@ ldbmodify -v -H /var/lib/samba/private/sam.ldb ntGen.ldif
 ### HQ-CLI
 
 ```bash
-sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
 systemctl restart network
 apt-get update && apt-get install bind-utils -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
