@@ -5,5 +5,3 @@ sss_cache -E
 systemctl restart sssd
 
 sudo -l -U hquser1
-
-reboot
