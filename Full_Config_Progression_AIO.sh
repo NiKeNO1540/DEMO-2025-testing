@@ -394,7 +394,7 @@ EOF
         sleep 8
         log_message "Настройка DNS на клиенте"
         cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
-apt-get update && apt-get install bind-utils -y
+apt-get update && apt-get install bind-utils admc yandex-browser -y
 system-auth write ad AU-TEAM.IRPO cli AU-TEAM 'administrator' 'P@ssw0rd'
 hostnamectl set-hostname hq-cli.au-team.irpo
 EOF
