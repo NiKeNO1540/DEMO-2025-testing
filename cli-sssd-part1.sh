@@ -1,7 +1,7 @@
 #! /bin/bash
 
 useradd sshuser -u 2026
-echo -e "P@ssw0rd\nP@ssw0rd" | passwd remote_user
+echo -e "sshuser:P@ssw0rd" | chpasswd
 
 apt-get install sudo libsss_sudo -y
 control sudo public
