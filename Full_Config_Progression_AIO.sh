@@ -513,7 +513,7 @@ EOF
     log_message "Настройка chrony на удаленных хостах"
     cat << EOF | sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
-echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 EOF
     if [ $? -eq 0 ]; then
@@ -524,7 +524,7 @@ EOF
 
     cat << EOF | sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.1.4
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
-echo -e 'server 172.16.1.4 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 EOF
     if [ $? -eq 0 ]; then
@@ -535,7 +535,7 @@ EOF
 
     cat << EOF | sshpass -p 'toor' ssh -t -p 2026 -o ConnectTimeout=10 root@172.16.2.5
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
-echo -e 'server 172.16.2.5 iburst prefer' > /etc/chrony.conf
+echo -e 'server 172.16.2.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
 EOF
     if [ $? -eq 0 ]; then
