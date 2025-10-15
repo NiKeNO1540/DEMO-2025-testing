@@ -1,7 +1,7 @@
 #! /bin/bash
 
 useradd sshuser -u 2026
-echo -e "P@ssw0rd\nP@ssw0rd" | passwd remote_user
+echo -e "sshuser:P@ssw0rd" | chpasswd
 
 # Установка утилит
 echo nameserver 8.8.8.8 >> /etc/resolv.conf && apt-get update && apt-get install wget dos2unix task-samba-dc -y
