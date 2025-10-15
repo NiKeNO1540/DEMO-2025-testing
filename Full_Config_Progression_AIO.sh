@@ -441,6 +441,7 @@ EOF
         log_message "Запуск cli-sssd-part1.sh"
         if [ -f "cli-sssd-part1.sh" ]; then
             sshpass -p 'toor' ssh -t -p 2222 -o ConnectTimeout=10 root@172.16.1.4 "bash -s" < cli-sssd-part1.sh
+            echo "reboot" | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=5 root@172.16.1.4
             if [ $? -eq 0 ]; then
                 log_message "cli-sssd-part1.sh выполнен успешно"
                 mark_step_completed "7.7_cli-sssd-part1"
