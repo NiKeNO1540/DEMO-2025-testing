@@ -505,6 +505,7 @@ EOF
 
     log_message "Включение chrony службы"
     systemctl enable --now chronyd
+    systemctl restart chronyd
     if [ $? -eq 0 ]; then
         log_message "Chronyd включен и запущен"
     else
@@ -516,6 +517,9 @@ EOF
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
 echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
+systemctl restart chronyd
+sleep 5
+timedatectl
 EOF
     if [ $? -eq 0 ]; then
         log_message "Chrony настроен на 172.16.1.4:2222"
@@ -527,6 +531,9 @@ EOF
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
 echo -e 'server 172.16.1.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
+systemctl restart chronyd
+sleep 5
+timedatectl
 EOF
     if [ $? -eq 0 ]; then
         log_message "Chrony настроен на 172.16.1.4:2026"
@@ -538,6 +545,9 @@ EOF
 which chronyd >/dev/null 2>&1 || apt-get install chrony -y
 echo -e 'server 172.16.2.1 iburst prefer' > /etc/chrony.conf
 systemctl enable --now chronyd
+systemctl restart chronyd
+sleep 5
+timedatectl
 EOF
     if [ $? -eq 0 ]; then
         log_message "Chrony настроен на 172.16.2.5:2026"
