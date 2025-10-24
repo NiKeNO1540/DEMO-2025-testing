@@ -72,10 +72,10 @@ EOF
 
 ln -sf /etc/nginx/sites-available.d/proxy.conf /etc/nginx/sites-enabled.d/
 
-log_message "Проверка конфигурации nginx"
+echo "Проверка конфигурации nginx"
 nginx -t
 
-log_message "Включение и запуск nginx"
+echo "Включение и запуск nginx"
 systemctl enable --now nginx
 systemctl restart nginx
 apt-get install chrony -y
