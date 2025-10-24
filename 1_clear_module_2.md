@@ -91,7 +91,9 @@ systemctl enable --now chronyd
 ### HQ-SRV
 
 ```bash
+if ! grep -q '\<server=/au-team.irpo/' /etc/dnsmasq.conf; then
 echo "server=/au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
+fi
 systemctl restart dnsmasq
 echo "sshuser:P@ssw0rd" | chpasswd
 mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sd[b-c]
@@ -388,7 +390,9 @@ apt-get install yandex-browser -y
 ### HQ-SRV
 
 ```bash
+if ! grep -q '\<server=/au-team.irpo/' /etc/dnsmasq.conf; then
 echo "server=/au-team.irpo/192.168.3.10" >> /etc/dnsmasq.conf
+fi
 systemctl restart dnsmasq
 ```
 
