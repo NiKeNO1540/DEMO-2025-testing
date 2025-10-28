@@ -272,7 +272,9 @@ ansible_python_interpreter=/usr/bin/python3\
 interpreter_python=auto_silent\
 ansible_host_key_checking=false' /etc/ansible/ansible.cfg
 
+if ! [ -f ~/.ssh/id_rsa ]; then
 ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa -q
+fi
 apt-get install sshpass -y
 grep -q "172.16.1.4:2026" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2026 172.16.1.4 >> ~/.ssh/known_hosts
 grep -q "172.16.1.4:2222" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -p 2222 172.16.1.4 >> ~/.ssh/known_hosts
