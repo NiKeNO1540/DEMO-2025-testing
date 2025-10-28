@@ -821,7 +821,7 @@ mkdir -p /etc/nginx/sites-enabled.d
 
 cat << EOF > /etc/nginx/sites-available.d/proxy.conf
 server {
-    listen 80;
+    listen 172.16.1.1:80;
     server_name web.au-team.irpo;
     
     auth_basic "Restricted Access";
@@ -835,7 +835,7 @@ server {
 }
 
 server {
-    listen 80;
+    listen 172.16.2.1:80;
     server_name docker.au-team.irpo;
     
     location / {
