@@ -16,7 +16,7 @@ ip nat source static tcp 192.168.1.10 80 172.16.1.4 8080
 ip nat source static tcp 192.168.1.10 2026 172.16.1.4 2026
 ip nat source static tcp 192.168.2.10 2222 172.16.1.4 2222
 end
-wr
+wre
 ```
 
 ### BR-RTR
@@ -44,7 +44,7 @@ mkdir -p /etc/nginx/sites-enabled.d
 
 cat << EOF > /etc/nginx/sites-available.d/proxy.conf
 server {
-    listen 80;
+    listen 172.16.1.1:80;
     server_name web.au-team.irpo;
     
     auth_basic "Restricted Access";
@@ -58,7 +58,7 @@ server {
 }
 
 server {
-    listen 80;
+    listen 172.16.2.1:80;
     server_name docker.au-team.irpo;
     
     location / {
