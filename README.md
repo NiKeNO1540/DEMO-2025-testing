@@ -86,7 +86,7 @@ wr
 ```bash
 mkdir -p /etc/net/ifaces/ens20
 echo -e "DISABLED=no\nTYPE=eth\nBOOTPROTO=static\nCONFIG_IPv4=yes" > /etc/net/ifaces/ens20/options
-echo "192.168.1.10/26" > /etc/net/ifaces/ens20/ipv4address
+echo "192.168.1.10/27" > /etc/net/ifaces/ens20/ipv4address
 echo "default via 192.168.1.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 ```
@@ -106,7 +106,7 @@ systemctl restart network
 ```bash
 mkdir -p /etc/net/ifaces/ens20
 echo -e "DISABLED=no\nTYPE=eth\nBOOTPROTO=static\nCONFIG_IPv4=yes" > /etc/net/ifaces/ens20/options
-echo "192.168.3.10/27" > /etc/net/ifaces/ens20/ipv4address
+echo "192.168.3.10/28" > /etc/net/ifaces/ens20/ipv4address
 echo "default via 192.168.3.1" > /etc/net/ifaces/ens20/ipv4route
 systemctl restart network
 ```
