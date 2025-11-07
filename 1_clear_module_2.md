@@ -130,7 +130,7 @@ systemctl enable nfs
 systemctl restart nfs
 
 apt-get update
-apt-get install apache2 php8.2 apache2-mod_php8.2 mariadb-server php8.2-{opcache,curl,gd,intl,mysqli,xml,xmlrpc,ldap,zip,soap,mbstring,json,xmlreader,fileinfo,sodium} -y
+apt-get install lamp-server -y
 
 systemctl enable --now httpd2 mariadb
 
@@ -756,7 +756,7 @@ chmod +x /root/launch.sh
 
 ```bash
 apt-get update
-apt-get install apache2 php8.2 apache2-mod_php8.2 mariadb-server php8.2-{opcache,curl,gd,intl,mysqli,xml,xmlrpc,ldap,zip,soap,mbstring,json,xmlreader,fileinfo,sodium} -y
+apt-get install lamp-server -y
 
 systemctl enable --now httpd2 mariadb
 
