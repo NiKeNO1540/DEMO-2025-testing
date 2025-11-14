@@ -44,19 +44,17 @@ backend = systemd
 
 `systemctl enable --now fail2ban && systemctl restart fail2ban`
 
-> Затем проверяем
-
-`fail2ban-client status`
+> Затем проверяем через `fail2ban-client status`
 
 <img width="444" height="71" alt="image" src="https://github.com/user-attachments/assets/03146c31-d212-4456-8dde-fab5f6e448c5" />
 
 > Затем на любой машине ПЫТАЕМСЯ войти, вводя не правильные пароли (Условно на ISP-e через `ssh sshuser@172.16.1.4 -p 2026`)
 
-<img width="764" height="127" alt="image" src="https://github.com/user-attachments/assets/2d4bc05f-eefe-431e-865f-c1c4e533b290" />
+<img width="764" height="127" alt="ssh sshuser@172.16.1.4 -p 2026" src="https://github.com/user-attachments/assets/2d4bc05f-eefe-431e-865f-c1c4e533b290" />
 
 > После неудачных попыток нас выкидывает, не давая возможности на минуту повторно зайти, попутно у HQ-SRV при вводе `iptables -L` выводится следующее:
 
-<img width="865" height="78" alt="image" src="https://github.com/user-attachments/assets/77b9a458-0cdb-411e-b6f6-302015a11658" />
+<img width="865" height="78" alt="iptables -L" src="https://github.com/user-attachments/assets/77b9a458-0cdb-411e-b6f6-302015a11658" />
 
 > Через минуту должно пропасть.
 
@@ -64,7 +62,9 @@ backend = systemd
 
 > Если нужно удоствериться, что прошла одна минута, загляните в /var/log/fail2ban.log
 
-<img width="788" height="58" alt="image" src="https://github.com/user-attachments/assets/30207c51-cd93-4274-81a6-231885689941" />
+<img width="788" height="58" alt="/var/log/fail2ban.log" src="https://github.com/user-attachments/assets/30207c51-cd93-4274-81a6-231885689941" />
 
+> Ну можно ещё более подробно проверить через `fail2ban-client status sshd`
 
+<img width="681" height="154" alt="fail2ban-client status sshd" src="https://github.com/user-attachments/assets/1224356f-d654-467b-932d-cc981e1f62b6" />
 
