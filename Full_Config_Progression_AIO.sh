@@ -725,7 +725,7 @@ if ! check_stage 13; then
     log_message "Создание конфигурации nginx прокси"
     cat << EOF > /etc/nginx/sites-available.d/proxy.conf
 server {
-    listen 172.16.1.1:80;
+    listen 80;
     server_name web.au-team.irpo;
     
     auth_basic "Restricted Access";
@@ -739,7 +739,7 @@ server {
 }
 
 server {
-    listen 172.16.1.2:80;
+    listen 80;
     server_name docker.au-team.irpo;
     
     location / {
