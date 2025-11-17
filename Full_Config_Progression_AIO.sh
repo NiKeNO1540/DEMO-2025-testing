@@ -846,7 +846,7 @@ EOF
     gpasswd -a 'sshuser' wheel
     fi
     systemctl restart sshd
-    EOF
+EOF
 
     cat << EOF | sshpass -p 'toor' ssh -p 2026 root@172.16.2.5
     echo -e 'AllowUsers sshuser\nMaxAuthTries 2\nBanner /root/banner' >> /etc/openssh/sshd_config
@@ -856,7 +856,7 @@ EOF
     gpasswd -a 'sshuser' wheel
     fi
     systemctl restart sshd
-    EOF
+EOF
     if [ $? -eq 0 ]; then
         log_message "Переделан SSH"
     else
