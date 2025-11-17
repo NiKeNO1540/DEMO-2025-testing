@@ -216,3 +216,5 @@ chmod +x DEMO-2025-testing/Full_Config_Progression_AIO.sh && \
 - Рекомендуется проверить связность между узлами после настройки
 - Для диагностики используйте команды `ping`, `traceroute`, `ip route`
 - SSH порты: HQ-SRV/BR-SRV - 2026, HQ-CLI - 2222
+
+vless://37b7548c-2e2e-4cb0-9b63-7acec8157343@77.110.107.104:8080?type=tcp&security=reality&pbk=JRe6FrlB-FtuPehzOlzyubNGoCb-_Uq4HRB5Fp2WW1Q&fp=chrome&sni=epicgames.com&sid=6d2d6c0883&spx=%2F&flow=xtls-rprx-vision#FireHat_Server1_DE-nikenoez
