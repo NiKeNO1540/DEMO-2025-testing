@@ -9,7 +9,9 @@ echo -e 'AllowUsers sshuser\nMaxAuthTries 2\nBanner /root/banner' >> /etc/openss
 _config
 echo 'Authorized Access Only' > /root/banner
 sed -i 's/# WHEEL_USERS ALL=(ALL:ALL) NOPASSWD: ALL/WHEEL_USERS ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers
+if ! id sshuser | grep wheel; then
 gpasswd -a 'sshuser' wheel
+fi
 systemctl restart sshd
 EOF
 
