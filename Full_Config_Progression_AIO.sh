@@ -836,7 +836,14 @@ EOF
     else
         log_message "Ошибка проверки прав доступа"
     fi
-    
+
+
+    chmod +x ssh_restrict.sh
+    ./ssh_restrict.sh
+    if [ $? -eq 0 ]; then
+        log_message "Переделан SSH"
+    else
+        log_message "Не переделан SSH"
     mark_stage_completed 15
 else
     log_message "Этап 15 уже выполнен, пропускаем"
