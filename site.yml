@@ -18,9 +18,9 @@ services:
     container_name: testapp
     environment:
       DB_TYPE: maria
-      DB_HOST: db
+      DB_HOST: 192.168.0.2
       DB_NAME: testdb
-      DB_USER: test
+      DB_USER: testc
       DB_PASS: Passw0rd
       DB_PORT: 3306
     ports:
