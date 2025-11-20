@@ -66,6 +66,7 @@ if ! check_stage 1; then
     log_message "Начало этапа 1: Настройка сетевых интерфейсов"
     
     log_message "Создание директорий для сетевых интерфейсов"
+    timedatectl set-timezone Asia/Yekaterinburg
     mkdir -p /etc/net/ifaces/ens21
     mkdir -p /etc/net/ifaces/ens22
     log_message "Директории созданы: /etc/net/ifaces/ens21, /etc/net/ifaces/ens22"
