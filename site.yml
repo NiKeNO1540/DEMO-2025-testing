@@ -3,13 +3,10 @@ services:
     image: mariadb
     container_name: db
     environment:
-      DB_NAME: testdb
-      DB_USER: test
-      DB_PASS: Passw0rd
-      MYSQL_ROOT_PASSWORD: Passw0rd
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: test
-      MYSQL_PASSWORD: Passw0rd
+      MARIADB_DATABASE: "testdb"
+      MARIADB_USER: "testc"
+      MARIADB_PASSWORD: "Passw0rd"
+      MARIADB_ROOT_PASSWORD: "Passw0rd"
     volumes:
       - db_data:/var/lib/mysql
     networks:
