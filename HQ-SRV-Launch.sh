@@ -2,6 +2,7 @@
 
 useradd sshuser -u 2026
 echo -e "sshuser:P@ssw0rd" | chpasswd
+timedatectl set-timezone Asia/Yekaterinburg
 
 echo nameserver 8.8.8.8 >> /etc/resolv.conf
 
