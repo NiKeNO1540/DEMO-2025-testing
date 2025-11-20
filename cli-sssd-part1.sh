@@ -2,6 +2,7 @@
 
 useradd sshuser -u 2026
 echo -e "sshuser:P@ssw0rd" | chpasswd
+timedatectl set-timezone Asia/Yekaterinburg
 
 apt-get install sudo libsss_sudo -y
 control sudo public
