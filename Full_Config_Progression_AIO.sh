@@ -66,6 +66,7 @@ if ! check_stage 1; then
     log_message "Начало этапа 1: Настройка сетевых интерфейсов"
     
     log_message "Создание директорий для сетевых интерфейсов"
+    apt-get reinstall tzdata -y
     timedatectl set-timezone Asia/Yekaterinburg
     mkdir -p /etc/net/ifaces/ens21
     mkdir -p /etc/net/ifaces/ens22
