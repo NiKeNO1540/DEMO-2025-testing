@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb
+    image: mariadb:10.11
     container_name: db
     environment:
       MARIADB_DATABASE: "testdb"
@@ -12,7 +12,7 @@ services:
       - "3306:3306"
 
   testapp:
-    image: site
+    image: site:latest
     container_name: testapp
     environment:
       DB_TYPE: "maria"
