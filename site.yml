@@ -17,7 +17,7 @@ services:
     environment:
       DB_TYPE: "maria"
       DB_HOST: db
-      DB_NAME: "testdb
+      DB_NAME: "testdb"
       DB_USER: "testc"
       DB_PASS: "Passw0rd"
       DB_PORT: "3306"
