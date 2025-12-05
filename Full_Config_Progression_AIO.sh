@@ -734,7 +734,7 @@ server {
     auth_basic_user_file /etc/nginx/.htpasswd;
     
     location / {
-        proxy_pass http://172.16.1.4:8080;
+        proxy_pass http://172.16.2.5:8080;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
     }
@@ -745,7 +745,7 @@ server {
     server_name docker.au-team.irpo;
     
     location / {
-        proxy_pass http://172.16.2.5:8080;
+        proxy_pass http://172.16.1.4:8080;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
     }
