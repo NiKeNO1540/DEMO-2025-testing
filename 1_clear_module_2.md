@@ -16,7 +16,7 @@ ip nat source static tcp 192.168.1.10 80 172.16.1.4 8080
 ip nat source static tcp 192.168.1.10 2026 172.16.1.4 2026
 ip nat source static tcp 192.168.2.10 2222 172.16.1.4 2222
 end
-wre
+wr
 ```
 
 ### BR-RTR
