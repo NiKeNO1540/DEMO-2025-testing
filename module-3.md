@@ -12,6 +12,7 @@ exit
 # Правило 20: Разрешаем входящие подключения к сервисам
 filter-map ipv4 INTERNET_IN 20
 match tcp any any eq 80
+match tcp any any eq 22
 match tcp any any eq 443
 match tcp any any eq 8080
 match tcp any any eq 2026
@@ -54,6 +55,7 @@ exit
 # Правило 20: Разрешаем входящие подключения к сервисам
 filter-map ipv4 INTERNET_IN 20
 match tcp any any eq 80
+match tcp any any eq 22
 match tcp any any eq 443
 match tcp any any eq 8080
 match tcp any any eq 2026
