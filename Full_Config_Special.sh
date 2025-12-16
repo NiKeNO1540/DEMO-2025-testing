@@ -378,7 +378,7 @@ if ! check_stage 7; then
     if ! check_step "7.3_set-dhcp"; then
         log_message "Настройка DNS: переключение клиента в DHCP"
         cat << EOF | sshpass -p 'toor' ssh -p 2222 -o ConnectTimeout=10 root@172.16.1.4
-sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens20/options
+sed -i 's/BOOTPROTO=static/BOOTPROTO=dhcp/' /etc/net/ifaces/ens19/options
 systemctl restart network
 EOF
         if [ $? -eq 0 ]; then
