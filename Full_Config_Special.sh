@@ -78,8 +78,8 @@ if ! check_stage 1; then
     log_message "Конфигурационные файлы options созданы"
 
     log_message "Назначение IP-адресов интерфейсам"
-    echo "172.16.1.1/28" > /etc/net/ifaces/ens21/ipv4address
-    echo "172.16.2.1/28" > /etc/net/ifaces/ens22/ipv4address
+    echo "172.16.1.1/28" > /etc/net/ifaces/ens20/ipv4address
+    echo "172.16.2.1/28" > /etc/net/ifaces/ens21/ipv4address
     log_message "IP-адреса назначены: ens21=172.16.1.1/28, ens22=172.16.2.1/28"
 
     log_message "Перезапуск сетевой службы"
